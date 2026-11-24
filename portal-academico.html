@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal académico — Acme School</title>
+    <link rel="prefetch" href="index.html"/>
+  <link rel="prefetch" href="seccion-ingreso.html"/>
+  <link rel="prefetch" href="portal-academico.html" />
+  <link rel="prefetch" href="perfil-usuario.html" />
+  <link rel="prefetch" href="gestion-usuarios.html" />
+  <link rel="prefetch" href="gestion-examenes.html" />
+</head>
+<body class="page-academic-portal" data-page="academic-portal">
+  <!-- Barra de navegación privada (siempre #1d2e4a; activo #ffffff, inactivos #d2cfca, cerrar sesión siempre #bbc3d2) -->
+  <header class="navbar navbar--private" id="private-navbar">
+    <a
+      href="portal-academico.html"
+      class="nav-home is-active"
+      data-nav="portal-home"
+      aria-current="page"
+      aria-label="Inicio del portal académico"
+    >
+      <!-- Agregar ícono de casa manualmente aquí -->
+      <span class="manual-icon" data-slot="home-icon"></span>
+    </a>
+
+    <nav class="nav-links" aria-label="Navegación portal académico">
+      <a
+        href="gestion-usuarios.html"
+        class="nav-item"
+        data-nav="users-management"
+      >
+        GESTIÓN DE USUARIOS
+      </a>
+      <a
+        href="gestion-examenes.html"
+        class="nav-item"
+        data-nav="exams-management"
+      >
+        GESTIÓN DE EXÁMENES
+      </a>
+      <a
+        href="perfil-usuario.html"
+        class="nav-item"
+        data-nav="user-profile"
+      >
+        USUARIO
+      </a>
+      <button
+        type="button"
+        class="nav-item nav-item--logout"
+        id="btn-open-logout-modal"
+        data-nav="logout"
+      >
+        CERRAR SESIÓN
+      </button>
+    </nav>
+  </header>
+
+  <main class="portal-main" id="portal-main">
+    <!-- Banner principal del portal académico -->
+    <section class="portal-hero" aria-labelledby="portal-hero-title">
+      <!-- Agregar imagen de fondo manualmente aquí -->
+      <div class="manual-image" data-slot="portal-hero-bg"></div>
+
+      <div class="portal-hero__box">
+        <h1 class="portal-hero__title" id="portal-hero-title">
+          Plataforma de Exámenes Acme School
+        </h1>
+        <p class="portal-hero__subtitle">
+          Portal académico de Acme School
+        </p>
+      </div>
+    </section>
+
+    <!-- Dos contenedores informativos y accesos directos a los módulos -->
+    <section class="portal-cards-section" aria-label="Accesos del portal académico">
+      <article class="portal-card" id="portal-card-overview">
+        <h2 class="portal-card__title">Información general</h2>
+        <p class="portal-card__text">
+          Bienvenido a la Plataforma de Exámenes de Acme School. Consulta los exámenes disponibles para presentarlos en línea o inicia sesión para administrar usuarios y evaluaciones.
+        </p>
+      </article>
+
+      <article class="portal-card" id="portal-card-actions">
+        <h2 class="portal-card__title">Administración académica</h2>
+        <p class="portal-card__text">
+          Portal académico de Acme School. Gestiona usuarios, crea o edita exámenes y configura preguntas con una única respuesta correcta desde tu espacio privado.
+        </p>
+
+        <div class="portal-card__buttons">
+          <a
+            href="gestion-examenes.html"
+            class="btn-portal-action btn-portal-action--exams"
+            data-action="go-exams-management"
+          >
+            Gestionar exámenes
+          </a>
+          <a
+            href="gestion-usuarios.html"
+            class="btn-portal-action btn-portal-action--users"
+            data-action="go-users-management"
+          >
+            Gestionar usuarios
+          </a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- Ventana emergente: Confirmación de cerrar sesión -->
+  <div
+    class="modal-overlay is-hidden"
+    id="modal-logout"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="logout-modal-title"
+  >
+    <div class="modal-card modal-card--logout">
+      <button
+        type="button"
+        class="modal-close"
+        id="btn-close-logout-modal"
+        data-close-modal="modal-logout"
+        aria-label="Cerrar ventana"
+      >
+        <!-- Agregar ícono de cerrar (X) manualmente aquí -->
+        <span class="manual-icon" data-slot="close-icon"></span>
+      </button>
+
+      <header class="logout-modal__header">
+        <h2 class="logout-modal__badge" id="logout-modal-title">
+          Acceso privado — Acme School.
+        </h2>
+      </header>
+
+      <p class="logout-modal__warning">
+        ¿ESTÁS SEGURO DE CERRAR SESSIÓN? DEBES DE VOLVER A INICIAR SESSIÓN PARA ACCEDER A LOS MÓDULOS DEL PORTAL.
+      </p>
+
+      <div class="logout-modal__actions">
+        <!-- Al pulsar este botón, cierra sesión y redirige a index.html (página principal pública) -->
+        <a
+          href="index.html"
+          id="btn-confirm-logout"
+          class="btn-confirm-logout"
+          data-action="confirm-logout"
+        >
+          Cerrar sessión
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="footer">
+    <p>© 2026 ACME SCHOOL · EVALUACIONES PÚBLICAS Y GESTIÓN ACADÉMICA.</p>
+  </footer>
+</body>
+</html>
