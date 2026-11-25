@@ -89,53 +89,110 @@ function bindGlobalLoginAndSession() {
   }
 
   const loginForm =
-    document.getElementById('login-form') || document.querySelector('[data-login-form]');
-  if (loginForm) {
-    const emailInput =
-      document.getElementById('login-email') ||
-      loginForm.querySelector('input[type="email"], [name="email"]');
-    const passwordInput =
-      document.getElementById('login-password') ||
-      loginForm.querySelector('input[type="password"], [name="password"]');
+  document.getElementById('login-form') || document.querySelector('[data-login-form]');
+if (loginForm) {
+  const emailInput =
+    document.getElementById('login-email') ||
+    loginForm.querySelector('input[type="email"], [name="email"]');
+  const passwordInput =
+    document.getElementById('login-password') ||
+    loginForm.querySelector('input[type="password"], [name="password"]');
 
-    loginForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+  const emailGroup =
+    document.getElementById('login-email-group') || emailInput?.closest('.auth-field') || null;
+  const passwordGroup =
+    document.getElementById('login-password-group') ||
+    passwordInput?.closest('.auth-field') ||
+    null;
 
-      const emailVal = emailInput?.value ?? '';
-      const passwordVal = passwordInput?.value ?? '';
-      const result = authenticateUser(emailVal, passwordVal);
+  const resetFieldState = (input, group) => {
+    if (!input) return;
+    input.classList.remove('is-invalid');
+    if (input.dataset.defaultPlaceholder) {
+      input.placeholder = input.dataset.defaultPlaceholder;
+    }
+    group?.setAttribute('data-field-status', 'valid');
+  };
 
-      if (result.status === 'valid') {
-        if (emailInput) emailInput.classList.remove('is-invalid');
-        if (passwordInput) passwordInput.classList.remove('is-invalid');
+  const setFieldInvalid = (input, group, errorMessage) => {
+    if (!input) return;
+    input.value = '';
+    input.classList.add('is-invalid');
+    input.placeholder =
+      errorMessage || input.dataset.errorPlaceholder || input.placeholder;
+    group?.setAttribute('data-field-status', 'invalid');
+  };
+
+  // Si el usuario vuelve a escribir en un campo, regresamos su estado a válido
+  emailInput?.addEventListener('input', () => resetFieldState(emailInput, emailGroup));
+  passwordInput?.addEventListener('input', () => resetFieldState(passwordInput, passwordGroup));
+
+  loginForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const emailVal = emailInput?.value ?? '';
+    const passwordVal = passwordInput?.value ?? '';
+    const result = authenticateUser(emailVal, passwordVal);
+
+    if (result.ok || result.status === 'authorized') {
+      resetFieldState(emailInput, emailGroup);
+      resetFieldState(passwordInput, passwordGroup);
+
+      loginForm.setAttribute('data-auth-state', 'authorized');
+
+      const authorizedBanner = document.getElementById('auth-authorized-banner');
+      const welcomeMessageEl = document.getElementById('auth-welcome-message');
+      const loggedUserNameEl = authorizedBanner?.querySelector('[data-logged-user-name]');
+      const userName =
+        result.user?.name ||
+        result.user?.fullName ||
+        result.user?.nombre ||
+        'usuario';
+
+      if (loggedUserNameEl) {
+        loggedUserNameEl.textContent = userName;
+      } else if (welcomeMessageEl) {
+        welcomeMessageEl.textContent = `Bienvenido, ${userName}.`;
+      }
+
+      authorizedBanner?.classList.remove('is-hidden');
+      showToast(result.message || `Bienvenido/a, ${userName}`, { type: 'success' });
+
+      setTimeout(() => {
         closeModal('modal-login');
-        showToast(`Bienvenido/a, ${result.user.name}`, { type: 'success' });
         window.location.href = 'portal-academico.html';
-        return;
-      }
+      }, 3000);
+      return;
+    }
 
-      if (result.clearEmail && emailInput) {
-        emailInput.value = '';
-        emailInput.classList.add('is-invalid');
-      } else if (emailInput) {
-        emailInput.classList.remove('is-invalid');
-      }
 
-      if (result.clearPassword && passwordInput) {
-        passwordInput.value = '';
-        passwordInput.classList.add('is-invalid');
-      } else if (passwordInput) {
-        passwordInput.classList.remove('is-invalid');
-      }
 
-      setAlertMessage({
-        modalId: 'modal-login-error',
-        messageSelector: '#modal-login-error-message',
-        message: result.message || 'Correo o contraseña incorrectos.',
-        open: true
-      });
+    if (result.clearEmail) {
+      setFieldInvalid(emailInput, emailGroup, result.emailError);
+    } else {
+      resetFieldState(emailInput, emailGroup);
+    }
+
+    if (result.clearPassword) {
+      setFieldInvalid(passwordInput, passwordGroup, result.passwordError);
+    } else {
+      resetFieldState(passwordInput, passwordGroup);
+    }
+
+    const errorText =
+      result.message ||
+      [result.emailError, result.passwordError].filter(Boolean).join(' · ') ||
+      'Correo o contraseña incorrectos.';
+
+    setAlertMessage({
+      modalId: 'modal-login-error',
+      messageSelector: '#modal-login-error-message',
+      message: errorText,
+      open: true
     });
-  }
+  });
+}
+
 
   bindLogoutAction({
     onLogout: () => {

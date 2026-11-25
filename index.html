@@ -142,7 +142,109 @@
         <div class="manual-media" data-slot="empty-state-media"></div>
       </div>
     </section>
-      <div id="modal-login">...</div>
+    <div class="auth-modal-backdrop is-hidden" id="modal-login">
+      <div class="auth-modal-card" id="login-modal-card">
+      <!-- Botón cerrar (X) -->
+      <button
+        type="button"
+        class="auth-modal-close"
+        id="btn-close-login-modal"
+        data-close-auth="modal-login"
+        aria-label="Cerrar ventana de acceso"
+      >
+        <span class="manual-icon" data-slot="close-icon"></span>
+      </button>
+
+      <!-- Encabezado de la ventana emergente -->
+      <header class="auth-modal-header">
+        <h2 class="auth-modal-title" id="login-modal-title">Acceso privado — Acme School.</h2>
+        <p class="auth-modal-subtitle">
+          Solo personal autorizado (Administrativos y Docentes) para gestionar usuarios y exámenes.
+        </p>
+      </header>
+
+      <!-- Formulario de ingreso (estados: default | invalid-email | invalid-password | invalid-both | authorized) -->
+      <form class="auth-form" id="login-form" novalidate>
+        <!-- Campo 1: Correo electrónico registrado -->
+        <div class="auth-field" id="login-email-group" data-field-status="valid">
+          <label for="login-email" class="auth-field__label">
+            CORREO ELECTRONICO REGISTRADO
+          </label>
+          <input
+            type="email"
+            id="login-email"
+            name="email"
+            class="auth-field__input"
+            placeholder="INGRESA TU CORREO ELECTRONICO"
+            data-default-placeholder="INGRESA TU CORREO ELECTRONICO"
+            data-error-placeholder="CORREO INVÁLIDO | VUELVE A INTENTARLO"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <!-- Campo 2: Contraseña -->
+        <div class="auth-field" id="login-password-group" data-field-status="valid">
+          <label for="login-password" class="auth-field__label">
+            CONTRASEÑA
+          </label>
+
+          <div class="password-control">
+            <input
+              type="password"
+              id="login-password"
+              name="password"
+              class="auth-field__input auth-field__input--password"
+              placeholder="INGRESA TU CONSTRASEÑA"
+              data-default-placeholder="INGRESA TU CONSTRASEÑA"
+              data-error-placeholder="CONTRASEÑA INVÁLIDA | VUELVE A INTENTARLO"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Contenedor mostrado cuando las credenciales son correctas -->
+        <div
+          class="auth-authorized-banner is-hidden"
+          id="auth-authorized-banner"
+          role="status"
+          aria-live="polite"
+        >
+          <p class="auth-authorized-banner__badge">INGRESO AUTORIZADO</p>
+          <p class="auth-authorized-banner__welcome" id="auth-welcome-message">
+            Bienvenido, <span data-logged-user-name>usuario</span>.
+          </p>
+        </div>
+
+
+        <!-- Contenedor mostrado cuando las credenciales son correctas -->
+        <div
+          class="auth-authorized-banner is-hidden"
+          id="auth-authorized-banner"
+          role="status"
+          aria-live="polite"
+        >
+          <p class="auth-authorized-banner__badge">INGRESO AUTORIZADO</p>
+          <p class="auth-authorized-banner__welcome" id="auth-welcome-message">
+            Bienvenido, <span data-logged-user-name>usuario</span>.
+          </p>
+        </div>
+
+        <!-- Botón principal de verificación / acceso al portal académico -->
+        <div class="auth-form__actions">
+          <button
+            type="submit"
+            id="btn-submit-login"
+            class="btn-auth-submit"
+            data-submit-mode="verify"
+          >
+            Ingresar
+          </button>
+        </div>
+      </form>
+    </div>
+    </div>
   </main>
 
   <!-- Pie de página -->
