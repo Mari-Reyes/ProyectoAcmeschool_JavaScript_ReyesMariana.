@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plataforma de Exámenes — Acme School</title>
-  <link rel="stylesheet" href="main.css" />
-  <link rel="stylesheet" href="temes.css" />
-  <link rel="stylesheet" href="responsive.css" />
+  <link rel="stylesheet" href="./assets/styles/main.css" />
+  <link rel="stylesheet" href="./assets/styles/themes.css" />
+  <link rel="stylesheet" href="./assets/styles/responsive.css" />
   <link rel="prefetch" href="vista-estudiante.html" />
   <link rel="prefetch" href="registro-estudiante.html" />
   <link rel="prefetch" href="visualizacion-examen.html" />
@@ -27,23 +27,18 @@
       aria-label="Página principal"
     >
       <!-- Agregar ícono de casa manualmente aquí -->
-      <span class="manual-icon" data-slot="home-icon"></span>
+      <span class="manual-icon" data-slot="home-icon">
+      </span>
     </a>
 
     <nav class="nav-links" aria-label="Navegación principal">
-      <a
-        href="vista-estudiante.html"
-        class="nav-item is-active"
-        data-nav="exams"
-        aria-current="page"
-      >
-        EXÁMENES DISPONIBLES
-      </a>
+
       <button
         type="button"
         class="nav-item"
         data-nav="login"
         id="btn-open-login"
+        href="seccion-ingreso.html"
       >
         INGRESAR
       </button>
@@ -147,17 +142,19 @@
         <div class="manual-media" data-slot="empty-state-media"></div>
       </div>
     </section>
-    <script type="module" src="./src/app.js"></script>
-    <script type="module" src="./src/storage/storageService.js"></script>
-    <script type="module" src="."></script>
-    <script type="module" src="./src/data/seed.js"></script>
-    <script type="module" src="./src/auth/authService.js"></script>
-    <script type="module" src="./src/componets/toast-alert.js"></script>
+      <div id="modal-login">...</div>
   </main>
 
   <!-- Pie de página -->
   <footer class="footer">
     <p>© 2026 ACME SCHOOL · EVALUACIONES PÚBLICAS Y GESTIÓN ACADÉMICA.</p>
   </footer>
+
+  <script type="module" src="./src/app.js"></script>
+    <script type="module" src="./src/storage/storageService.js"></script>
+    <script type="module" src="./src/data/seed.js"></script>
+    <script type="module" src="./src/auth/authService.js"></script>
+    <script type="module" src="./src/componets/toast-alert.js"></script>
+
 </body>
 </html>

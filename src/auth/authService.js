@@ -159,3 +159,7 @@ export const AUTH_STORAGE_KEYS = Object.freeze({
   users: USERS_STORAGE_KEY,
   session: SESSION_STORAGE_KEY
 });
+
+export function clearActiveSession() {
+  return logoutUser();
+}

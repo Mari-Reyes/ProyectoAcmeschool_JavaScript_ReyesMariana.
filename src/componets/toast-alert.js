@@ -140,3 +140,7 @@ export function initModalDismissListeners() {
     }
   });
 }
+
+export function bindModalCloseTriggers() {
+  initModalDismissListeners();
+}

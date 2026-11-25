@@ -146,3 +146,19 @@ export function populateEditExamHeader(exam = {}) {
   const count = Array.isArray(exam?.questions) ? exam.questions.length : 0;
   updateQuestionCounter(count);
 }
+
+export function bindLogoutAction({ onLogout = null } = {}) {
+  const confirmLogoutBtn =
+    document.getElementById('btn-confirm-logout') ||
+    document.querySelector('[data-action="confirm-logout"]');
+
+  if (confirmLogoutBtn) {
+    confirmLogoutBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (typeof onLogout === 'function') {
+        onLogout();
+      }
+    });
+  }
+}
+

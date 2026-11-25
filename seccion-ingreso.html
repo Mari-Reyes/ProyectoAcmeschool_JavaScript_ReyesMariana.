@@ -1,124 +1,161 @@
-<!-- Ventana emergente: Sección de ingreso (Acceso privado — Acme School) -->
-<div
-  class="auth-modal-backdrop is-hidden"
-  id="modal-login"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="login-modal-title"
-  data-auth-state="default"
->
-  <div class="auth-modal-card" id="login-modal-card">
-    <!-- Botón cerrar (X) -->
-    <button
-      type="button"
-      class="auth-modal-close"
-      id="btn-close-login-modal"
-      data-close-auth="modal-login"
-      aria-label="Cerrar ventana de acceso"
-    >
-      <!-- Agregar ícono de cerrar (X) manualmente aquí -->
-      <span class="manual-icon" data-slot="close-icon"></span>
-    </button>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acme School</title>
 
-    <!-- Encabezado de la ventana emergente -->
-    <header class="auth-modal-header">
-      <h2 class="auth-modal-title" id="login-modal-title">Acceso privado — Acme School.</h2>
-      <p class="auth-modal-subtitle">
-        Solo personal autorizado (Administrativos y Docentes) para gestionar usuarios y exámenes.
-      </p>
-    </header>
+  <link rel="prefetch" href="vista-estudiante.html" />
+  <link rel="prefetch" href="registro-estudiante.html" />
+  <link rel="prefetch" href="visualizacion-examen.html" />
+  <link rel="prefetch" href="resultado-estudiante.html" />
+  <link rel="prefetch" href="index.html" />
+  <link rel="prefetch" href="portal-academico.html" />
+  <link rel="prefetch" href="perfil-usuario.html" />
+  <link rel="prefetch" href="gestion-usuarios.html" />
+  <link rel="prefetch" href="gestion-examenes.html" />
 
-    <!-- Formulario de ingreso (estados: default | invalid-email | invalid-password | invalid-both | authorized) -->
-    <form class="auth-form" id="login-form" novalidate>
-      <!-- Campo 1: Correo electrónico registrado -->
-      <div class="auth-field" id="login-email-group" data-field-status="valid">
-        <label for="login-email" class="auth-field__label">
-          CORREO ELECTRONICO REGISTRADO
-        </label>
-        <input
-          type="email"
-          id="login-email"
-          name="email"
-          class="auth-field__input"
-          placeholder="INGRESA TU CORREO ELECTRONICO"
-          data-default-placeholder="INGRESA TU CORREO ELECTRONICO"
-          data-error-placeholder="CORREO INVÁLIDO | VUELVE A INTENTARLO"
-          autocomplete="email"
-          required
-        />
-      </div>
+  <!-- Usa ../ si este HTML está dentro de una subcarpeta, o ./ si está en la raíz -->
+  <link rel="stylesheet" href="./assets/styles/main.css" />
+  <link rel="stylesheet" href="./assets/styles/themes.css" />
+  <link rel="stylesheet" href="./assets/styles/responsive.css" />
+</head>
+<body class="page-home" data-page="home">
+  <header class="navbar">
+    <nav class="nav-links" aria-label="Navegación principal">
+      <button type="button" class="nav-item" id="btn-open-login">
+        Ingresar
+      </button>
+    </nav>
+  </header>
 
-      <!-- Campo 2: Contraseña (oculta por defecto con puntos; botones separados para mostrar y ocultar) -->
-      <div class="auth-field" id="login-password-group" data-field-status="valid">
-        <label for="login-password" class="auth-field__label">
-          CONTRASEÑA
-        </label>
+  <main>
+    <!-- Contenido principal de la página -->
+  </main>
 
-        <div class="password-control">
+  <!-- Ventana emergente: Sección de ingreso (Acceso privado — Acme School) -->
+  <div
+    class="auth-modal-backdrop is-hidden"
+    id="modal-login"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="login-modal-title"
+    data-auth-state="default"
+  >
+    <div class="auth-modal-card" id="login-modal-card">
+      <!-- Botón cerrar (X) -->
+      <button
+        type="button"
+        class="auth-modal-close"
+        id="btn-close-login-modal"
+        data-close-auth="modal-login"
+        aria-label="Cerrar ventana de acceso"
+      >
+        <span class="manual-icon" data-slot="close-icon"></span>
+      </button>
+
+      <!-- Encabezado de la ventana emergente -->
+      <header class="auth-modal-header">
+        <h2 class="auth-modal-title" id="login-modal-title">Acceso privado — Acme School.</h2>
+        <p class="auth-modal-subtitle">
+          Solo personal autorizado (Administrativos y Docentes) para gestionar usuarios y exámenes.
+        </p>
+      </header>
+
+      <!-- Formulario de ingreso (estados: default | invalid-email | invalid-password | invalid-both | authorized) -->
+      <form class="auth-form" id="login-form" novalidate>
+        <!-- Campo 1: Correo electrónico registrado -->
+        <div class="auth-field" id="login-email-group" data-field-status="valid">
+          <label for="login-email" class="auth-field__label">
+            CORREO ELECTRONICO REGISTRADO
+          </label>
           <input
-            type="password"
-            id="login-password"
-            name="password"
-            class="auth-field__input auth-field__input--password"
-            placeholder="INGRESA TU CONSTRASEÑA"
-            data-default-placeholder="INGRESA TU CONSTRASEÑA"
-            data-error-placeholder="CONTRASEÑA INVÁLIDA | VUELVE A INTENTARLO"
-            autocomplete="current-password"
+            type="email"
+            id="login-email"
+            name="email"
+            class="auth-field__input"
+            placeholder="INGRESA TU CORREO ELECTRONICO"
+            data-default-placeholder="INGRESA TU CORREO ELECTRONICO"
+            data-error-placeholder="CORREO INVÁLIDO | VUELVE A INTENTARLO"
+            autocomplete="email"
             required
           />
+        </div>
 
-          <!-- Primer botón: ojo abierto para mostrar contraseña -->
-          <button
-            type="button"
-            class="password-toggle-btn"
-            id="btn-show-login-password"
-            data-password-action="show"
-            aria-label="Mostrar contraseña"
-            aria-pressed="false"
-          >
-            <!-- Agregar ícono de ojo abierto manualmente aquí -->
-            <span class="manual-icon" data-slot="eye-open-icon"></span>
-          </button>
+        <!-- Campo 2: Contraseña (oculta por defecto con puntos; botones separados para mostrar y ocultar) -->
+        <div class="auth-field" id="login-password-group" data-field-status="valid">
+          <label for="login-password" class="auth-field__label">
+            CONTRASEÑA
+          </label>
 
-          <!-- Segundo botón (al lado): ojo tachado para volver a ocultar contraseña -->
+          <div class="password-control">
+            <input
+              type="password"
+              id="login-password"
+              name="password"
+              class="auth-field__input auth-field__input--password"
+              placeholder="INGRESA TU CONSTRASEÑA"
+              data-default-placeholder="INGRESA TU CONSTRASEÑA"
+              data-error-placeholder="CONTRASEÑA INVÁLIDA | VUELVE A INTENTARLO"
+              autocomplete="current-password"
+              required
+            />
+
+            <!-- Primer botón: ojo abierto para mostrar contraseña -->
+            <button
+              type="button"
+              class="password-toggle-btn"
+              id="btn-show-login-password"
+              data-password-action="show"
+              aria-label="Mostrar contraseña"
+              aria-pressed="false"
+            >
+              <span class="manual-icon" data-slot="eye-open-icon"></span>
+            </button>
+
+            <!-- Segundo botón (al lado): ojo tachado para volver a ocultar contraseña -->
+            <button
+              type="button"
+              class="password-toggle-btn"
+              id="btn-hide-login-password"
+              data-password-action="hide"
+              aria-label="Ocultar contraseña"
+              aria-pressed="true"
+            >
+              <span class="manual-icon" data-slot="eye-closed-icon"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor mostrado cuando las credenciales son correctas -->
+        <div
+          class="auth-authorized-banner is-hidden"
+          id="auth-authorized-banner"
+          role="status"
+          aria-live="polite"
+        >
+          <p class="auth-authorized-banner__badge">INGRESO AUTORIZADO</p>
+          <p class="auth-authorized-banner__welcome" id="auth-welcome-message">
+            Bienvenido, <span data-logged-user-name>usuario</span>.
+          </p>
+        </div>
+
+        <!-- Botón principal de verificación / acceso al portal académico -->
+        <div class="auth-form__actions">
           <button
-            type="button"
-            class="password-toggle-btn"
-            id="btn-hide-login-password"
-            data-password-action="hide"
-            aria-label="Ocultar contraseña"
-            aria-pressed="true"
+            type="submit"
+            id="btn-submit-login"
+            class="btn-auth-submit"
+            data-submit-mode="verify"
           >
-            <!-- Agregar ícono de ojo tachado manualmente aquí -->
-            <span class="manual-icon" data-slot="eye-closed-icon"></span>
+            Ingresar
           </button>
         </div>
-      </div>
-
-      <!-- Contenedor mostrado cuando las credenciales son correctas -->
-      <div
-        class="auth-authorized-banner is-hidden"
-        id="auth-authorized-banner"
-        role="status"
-        aria-live="polite"
-      >
-        <p class="auth-authorized-banner__badge">INGRESO AUTORIZADO</p>
-        <p class="auth-authorized-banner__welcome" id="auth-welcome-message">
-          Bienvenido, <span data-logged-user-name>usuario</span>.
-        </p>
-      </div>
-
-      <!-- Botón principal de verificación / acceso al portal académico -->
-      <div class="auth-form__actions">
-        <button
-          type="submit"
-          id="btn-submit-login"
-          class="btn-auth-submit"
-          data-submit-mode="verify"
-        >
-          Ingresar
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
+
+  <!-- Usa ../src/app.js si este HTML está dentro de una subcarpeta, o ./src/app.js si está en la raíz -->
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

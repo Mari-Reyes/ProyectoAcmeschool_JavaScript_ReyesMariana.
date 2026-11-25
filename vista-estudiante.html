@@ -4,10 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Datos del estudiante — Acme School</title>
+    <link rel="stylesheet" href="./assets/styles/main.css" />
+  <link rel="stylesheet" href="./assets/styles/themes.css" />
+  <link rel="stylesheet" href="./assets/styles/responsive.css" />
   <link rel="prefetch" href="index.html"/>
+  <link rel="prefetch" href="vista-estudiante.html" />
   <link rel="prefetch" href="registro-estudiante.html" />
   <link rel="prefetch" href="visualizacion-examen.html" />
   <link rel="prefetch" href="resultado-estudiante.html" />
+  <link rel="prefetch" href="seccion-ingreso.html"/>
+  <link rel="prefetch" href="portal-academico.html" />
+  <link rel="prefetch" href="perfil-usuario.html" />
+  <link rel="prefetch" href="gestion-usuarios.html" />
+  <link rel="prefetch" href="gestion-examenes.html" />
 </head>
 <body class="page-student-register" data-page="student-register">
   <!-- Barra de navegación superior (siempre #1d2e4a; botón activo #ffffff, inactivos #d2cfca) -->
@@ -23,18 +32,14 @@
     </a>
 
     <nav class="nav-links" aria-label="Navegación principal">
-      <a
-        href="vista-estudiante.html"
-        class="nav-item"
-        data-nav="exams"
-      >
-        EXÁMENES DISPONIBLES
+        
       </a>
       <button
         type="button"
         class="nav-item"
         data-nav="login"
         id="btn-open-login"
+        href="seccion-ingreso.html"
       >
         INGRESAR
       </button>
@@ -152,6 +157,7 @@
             id="btn-start-exam"
             class="btn-begin-exam"
             disabled
+            href="visualizacion-examen.html"
           >
             Comenzar Exámen
           </button>
@@ -165,17 +171,19 @@
         </a>
       </div>
     </section>
-    <script type="module" src="./src/app.js"></script>
-    <script type="module" src="./src/modules/examTaking/examRunnerController.js"></script>
-    <script type="module" src="./src/modules/examTaking/gradingService.js"></script>
-    <script type="module" src="./src/componets/exam-card.js"></script>
-    <script type="module" src="./src/data/shema.js"></script>
-    <script type="module" src="./src/componets/toast-alert.js"></script>
   </main>
 
   <!-- Pie de página -->
   <footer class="footer">
     <p>© 2026 ACME SCHOOL · EVALUACIONES PÚBLICAS Y GESTIÓN ACADÉMICA.</p>
   </footer>
+
+  <script type="module" src="./src/app.js"></script>
+    <script type="module" src="./src/modules/examTaking/examRunnerController.js"></script>
+    <script type="module" src="./src/modules/examTaking/gradingService.js"></script>
+    <script type="module" src="./src/componets/exam-card.js"></script>
+    <script type="module" src="./src/data/shema.js"></script>
+    <script type="module" src="./src/componets/toast-alert.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,52 @@
+/* ===== themes.css · Acme School — tokens de color, tipografía y fondos por página ===== */
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap");
+
+:root{
+  /* Paleta (del mockup) */
+  --navy:#1d2e4a;        /* nav, footer */
+  --nav-active:#ffffff;  /* botón de la página actual */
+  --nav-idle:#d2cfca;    /* botones inactivos */
+  --nav-logout:#bbc3d2;  /* cerrar sesión (siempre) */
+  --ink:#121a29;         /* negro azulado: botones principales, barras de pregunta */
+  --slate:#50647f;       /* píldoras informativas */
+  --slate-dark:#3a4557;  /* opción seleccionada / correcta */
+  --steel:#b8c2d2;       /* contenedores grandes */
+  --sand:#d2cfca;        /* fondo beige */
+  --mist:#e5e9ee;        /* campos y enunciados */
+  --card:#e5e5e5;        /* tarjetas */
+  --ice:#eef3f8;         /* títulos hero */
+  --brown:#5f5153;       /* hover Actualizar/Eliminar, nombres de examen */
+  --green:#5fa03d;
+  --red:#a23d3d;
+  --red-deep:#9b1f1f;
+  --text:#121a29;
+  --text-light:#ffffff;
+
+  /* Tipografía */
+  --font-display:"DM Serif Display","Playfair Display",Georgia,serif;
+  --font-body:"Poppins","Segoe UI",system-ui,sans-serif;
+
+  /* Forma y movimiento */
+  --r-pill:999px; --r-lg:28px; --r-md:20px; --r-sm:12px;
+  --shadow:0 4px 14px rgba(18,26,41,.18);
+  --shadow-up:0 12px 26px rgba(18,26,41,.28);
+  --ease:.28s cubic-bezier(.4,0,.2,1);
+
+  /* Imágenes de encabezado (poner url("img/...") donde no hay slot .manual-image) */
+  --img-register-hero:none;
+  --img-runner-hero:none;
+  --img-result-hero:none;
+}
+
+/* Fondo del <main> según página */
+body.page-student-view,
+body.page-student-register,
+body.page-exam-runner,
+body.page-exam-result,
+body.page-exams-management{background:var(--sand)}
+body.page-academic-portal{background:var(--ice)}
+body.page-user-profile{background:var(--slate-dark)}
+body.page-users-management{background:var(--ink)}
+
+/* Utilidades de estado reutilizables */
+.is-hidden{display:none!important}
