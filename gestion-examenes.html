@@ -761,6 +761,49 @@
     </div>
   </div>
 
+  <!-- ==================== VENTANA EMERGENTE CERRAR SESIÓN ==================== -->
+<div
+  class="modal-overlay is-hidden"
+  id="modal-logout"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="logout-modal-title"
+>
+  <div class="modal-card modal-card--logout">
+    <button
+      type="button"
+      class="modal-close"
+      id="btn-close-logout-modal"
+      data-close-modal="modal-logout"
+      aria-label="Cerrar ventana"
+    >
+      &times;
+    </button>
+
+    <header class="logout-modal__header">
+      <h2 class="logout-modal__badge" id="logout-modal-title">
+        Acceso privado — Acme School.
+      </h2>
+    </header>
+
+    <p class="logout-modal__warning">
+      ¿ESTÁS SEGURO DE CERRAR SESIÓN? DEBES VOLVER A INICIAR SESIÓN PARA ACCEDER A LOS MÓDULOS DEL PORTAL.
+    </p>
+
+    <div class="logout-modal__actions">
+      <a
+        href="index.html"
+        id="btn-confirm-logout"
+        class="btn-confirm-logout"
+        data-action="confirm-logout"
+      >
+        Cerrar sesión
+      </a>
+    </div>
+  </div>
+</div>
+
+
   <!-- Pie de página -->
   <footer class="footer">
     <p>© 2026 ACME SCHOOL · EVALUACIONES PÚBLICAS Y GESTIÓN ACADÉMICA.</p>

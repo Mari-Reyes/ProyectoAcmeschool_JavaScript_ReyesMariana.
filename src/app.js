@@ -81,6 +81,15 @@ function detectCurrentPageKey() {
   return 'home';
 }
 
+function performLogout() {
+  clearActiveSession();
+  closeModal('modal-logout');
+  showToast('Sesión cerrada correctamente', { type: 'info' });
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 150);
+}
+
 function bindGlobalLoginAndSession() {
   const session = getActiveSession();
   renderAuthenticatedUserGreeting(session);
@@ -206,18 +215,63 @@ function bindGlobalLoginAndSession() {
   }
 
   bindLogoutAction({
-    onLogout: () => {
-      clearActiveSession();
-      closeModal('modal-logout');
-      showToast('Sesión cerrada correctamente', { type: 'info' });
-      window.location.href = 'index.html';
-    }
+    onLogout: performLogout
   });
+
+  const confirmLogoutBtn = document.querySelector(
+    '#btn-confirm-logout, [data-action="confirm-logout"]'
+  );
+  if (confirmLogoutBtn) {
+    confirmLogoutBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      performLogout();
+    });
+  }
+
+  const closeLogoutBtn = document.querySelector(
+    '#btn-close-logout-modal, [data-close-modal="modal-logout"]'
+  );
+  if (closeLogoutBtn) {
+    closeLogoutBtn.addEventListener('click', () => {
+      closeModal('modal-logout');
+    });
+  }
 }
 
 function bootstrapApp() {
   ensureInitialSeedData();
   bindGlobalLoginAndSession();
+
+    document.addEventListener('click', (event) => {
+    const logoutTrigger = event.target.closest('#btn-open-logout-modal, [data-nav="logout"]');
+    if (logoutTrigger) {
+      event.preventDefault();
+      if (!document.getElementById('modal-logout')) {
+        performLogout();
+        return;
+      }
+      openModal('modal-logout');
+      return;
+    }
+
+    const confirmTrigger = event.target.closest(
+      '#btn-confirm-logout, [data-action="confirm-logout"]'
+    );
+    if (confirmTrigger) {
+      event.preventDefault();
+      performLogout();
+      return;
+    }
+
+    const closeLogoutTrigger = event.target.closest(
+      '#btn-close-logout-modal, [data-close-modal="modal-logout"]'
+    );
+    if (closeLogoutTrigger) {
+      event.preventDefault();
+      closeModal('modal-logout');
+    }
+  });
+
 
   const pageKey = detectCurrentPageKey();
 

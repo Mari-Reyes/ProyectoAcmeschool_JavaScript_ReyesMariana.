@@ -132,13 +132,43 @@ export function filterExamsByQuery(exams = [], query = '') {
   });
 }
 
-function ensureSingleCorrectOption(questions = []) {
-  return (Array.isArray(questions) ? questions : []).map((q) => {
-    const opts = Array.isArray(q.options) ? q.options.map((o) => ({ ...o })) : [];
-    if (opts.length > 0 && !opts.some((o) => Boolean(o.isCorrect))) {
-      opts[0].isCorrect = true;
+function sanitizeQuestionsForSave(questions = [], fallbackQuestions = []) {
+  const source =
+    Array.isArray(questions) && questions.length > 0
+      ? questions
+      : Array.isArray(fallbackQuestions) && fallbackQuestions.length > 0
+      ? fallbackQuestions
+      : [createEmptyQuestion(1)];
+
+  return source.map((q, qIdx) => {
+    const rawOpts = Array.isArray(q.options) ? q.options : [];
+    const fourOpts = [0, 1, 2, 3].map((oIdx) => {
+      const existing = rawOpts[oIdx] || {};
+      const textVal = capitalizeAfterPeriodOrNewline(
+        String(existing.text ?? '').trim() || `Opción ${oIdx + 1}`
+      );
+      return {
+        id: existing.id || `opt-${oIdx}`,
+        text: textVal,
+        isCorrect: Boolean(existing.isCorrect)
+      };
+    });
+
+    if (!fourOpts.some((o) => o.isCorrect)) {
+      fourOpts[0].isCorrect = true;
     }
-    return { ...q, options: opts };
+
+    return {
+      id: q.id || `q-${Date.now()}-${qIdx + 1}`,
+      number: qIdx + 1,
+      title: capitalizeAfterPeriodOrNewline(
+        String(q.title ?? '').trim() || `Pregunta ${qIdx + 1}`
+      ),
+      statement: capitalizeAfterPeriodOrNewline(
+        String(q.statement ?? '').trim() || `Enunciado de la pregunta ${qIdx + 1}`
+      ),
+      options: fourOpts
+    };
   });
 }
 
@@ -318,45 +348,46 @@ export function initExamsControllers({ onNavigate = null } = {}) {
     const descInput = document.getElementById('edit-exam-description');
     const approvalInput = document.getElementById('edit-approval-input');
 
-    const collectedQuestions = ensureSingleCorrectOption(
-      collectQuestionsFromEditor('edit-questions-list', 'edit', editDraft.questions)
-    );
+    const rawTitle = (titleInput?.value ?? editDraft.title ?? '').trim();
+    const rawDesc = (descInput?.value ?? editDraft.description ?? '').trim();
 
-    const candidate = normalizeExamSchema({
-      ...editDraft,
-      code: editDraft.code,
-      title: capitalizeAfterPeriodOrNewline((titleInput?.value ?? editDraft.title).trim()),
-      description: capitalizeAfterPeriodOrNewline(
-        (descInput?.value ?? editDraft.description).trim()
-      ),
-      approvalPercentage: approvalInput
-        ? Math.max(1, Math.min(100, Number(approvalInput.value) || editDraft.approvalPercentage))
-        : editDraft.approvalPercentage,
-      durationSeconds: timerEditor.getDurationSeconds(),
-      durationMinutes: Math.max(1, Math.ceil(timerEditor.getDurationSeconds() / 60)),
-      questions: collectedQuestions
-    });
-
-    const validation = validateExamSchema(candidate);
-    if (!validation.valid) {
-      const firstError =
-        Object.values(validation.errors || {})[0] ||
-        'Revisa que la información que escribiste cumple con las validaciones.';
-      setAlertMessage({
-        modalId: 'modal-exam-error',
-        messageSelector: '#modal-exam-error-message',
-        message: firstError,
-        open: true
+    if (!rawTitle || !rawDesc) {
+      showToast('Completa el nombre y la descripción del examen antes de guardar.', {
+        type: 'error'
       });
-      showToast(firstError, { type: 'error' });
       return;
     }
 
-    editDraft = candidate;
-    const exists = allExams.some((item) => item.id === editDraft.id);
+    const collectedQuestions = collectQuestionsFromEditor(
+      'edit-questions-list',
+      'edit',
+      editDraft.questions
+    );
+    const safeQuestions = sanitizeQuestionsForSave(collectedQuestions, editDraft.questions);
+
+    const totalSec = Math.max(60, Number(timerEditor.getDurationSeconds()) || (editDraft.durationMinutes || 30) * 60);
+    const updatedExam = normalizeExamSchema({
+      ...editDraft,
+      code: editDraft.code,
+      title: capitalizeAfterPeriodOrNewline(rawTitle),
+      description: capitalizeAfterPeriodOrNewline(rawDesc),
+      approvalPercentage: approvalInput
+        ? Math.max(1, Math.min(100, Number(approvalInput.value) || editDraft.approvalPercentage || 70))
+        : editDraft.approvalPercentage || 70,
+      durationSeconds: totalSec,
+      durationMinutes: Math.max(1, Math.round(totalSec / 60)),
+      questions: safeQuestions
+    });
+
+    editDraft = updatedExam;
+    const exists = allExams.some(
+      (item) => item.id === updatedExam.id || item.code === updatedExam.code
+    );
     allExams = exists
-      ? allExams.map((item) => (item.id === editDraft.id ? editDraft : item))
-      : [...allExams, editDraft];
+      ? allExams.map((item) =>
+          item.id === updatedExam.id || item.code === updatedExam.code ? updatedExam : item
+        )
+      : [...allExams, updatedExam];
 
     saveExamsToStorage(allExams);
     refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));
@@ -425,8 +456,10 @@ export function initExamsControllers({ onNavigate = null } = {}) {
     const approvalInput = document.getElementById('create-exam-approval');
 
     const minutes = Math.max(1, Number(minutesInput?.value ?? 30) || 30);
-    const collectedQuestions = ensureSingleCorrectOption(
-      collectQuestionsFromEditor('create-questions-list', 'create', createQuestionsDraft)
+    const collectedQuestions = collectQuestionsFromEditor(
+      'create-questions-list',
+      'create',
+      createQuestionsDraft
     );
 
     const newExam = normalizeExamSchema({

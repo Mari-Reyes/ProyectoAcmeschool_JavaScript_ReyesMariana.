@@ -47,3 +47,109 @@ body.page-users-management{background:var(--ink)}
 /* Utilidades de estado reutilizables */
 .is-hidden{display:none!important}
 
+/* ==================== ORGANIZACIÓN LIMPIA DE EDICIÓN / CREACIÓN ==================== */
+#section-edit-exam .edit-exam-form,
+#section-create-exam .create-exam-form {
+  width: 100%;
+  max-width: 1040px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+#section-edit-exam .editor-header-bar,
+#section-create-exam .editor-header-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#section-edit-exam .editor-user-greeting,
+#section-create-exam .editor-user-greeting,
+#section-edit-exam .btn-save-exam-changes,
+#section-create-exam .btn-save-new-exam {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 44px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.25rem;
+}
+
+@media (min-width: 700px) {
+  #section-edit-exam .editor-header-bar,
+  #section-create-exam .editor-header-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #section-edit-exam .editor-user-greeting,
+  #section-create-exam .editor-user-greeting {
+    flex: 1;
+    width: auto;
+  }
+
+  #section-edit-exam .btn-save-exam-changes,
+  #section-create-exam .btn-save-new-exam {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 180px;
+  }
+}
+
+#section-edit-exam .exam-details-editor {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.15rem;
+  border-radius: 18px;
+}
+
+#section-edit-exam .editor-field,
+#section-edit-exam .editor-field__label,
+#section-edit-exam .editor-field__input,
+#section-edit-exam .editor-field__textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  border-radius: 18px;
+  box-sizing: border-box;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#section-edit-exam .editor-field__label,
+#section-edit-exam .editor-field__input {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.65rem 1rem;
+}
+
+#section-edit-exam .editor-field__textarea {
+  min-height: 88px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}

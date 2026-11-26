@@ -324,3 +324,293 @@
   }
 }
 
+/* ==========================================================================
+   RESPONSIVE COMPLETO — GESTIÓN DE EXÁMENES (gestion-examenes.html)
+   ========================================================================== */
+
+.page-exams-management,
+.page-exams-management body,
+.page-exams-management .exams-mgmt-main,
+.page-exams-management .exam-section {
+  max-width: 100%;
+  overflow-x: clip;
+  box-sizing: border-box;
+}
+
+.page-exams-management .exam-section.is-hidden {
+  display: none !important;
+}
+
+.page-exams-management[data-exam-section="edit"] .exams-mgmt-hero,
+.page-exams-management[data-exam-section="create"] .exams-mgmt-hero,
+.page-exams-management[data-exam-section="view"] .exams-mgmt-hero {
+  display: none;
+}
+
+/* Tablets y pantallas medianas */
+@media (max-width: 900px) {
+  .page-exams-management .exams-board,
+  .page-exams-management .preview-panel,
+  .page-exams-management .edit-exam-form,
+  .page-exams-management .create-exam-form {
+    width: min(100% - 1.5rem, 920px);
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .preview-panel__meta,
+  .page-exams-management #section-edit-exam .preview-panel__meta {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .page-exams-management .create-exam-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Móviles y pantallas angostas (incluyendo <= 480px y ~333px) */
+@media (max-width: 720px) {
+  .page-exams-management .navbar--private {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .page-exams-management .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .page-exams-management .nav-item {
+    font-size: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    text-align: center;
+  }
+
+  .page-exams-management .exams-mgmt-hero__box {
+    padding: 1rem;
+    margin-inline: 0.75rem;
+  }
+
+  .page-exams-management .exams-mgmt-hero__title {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+    text-align: center;
+  }
+
+  .page-exams-management .exams-mgmt-hero__subtitle {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .page-exams-management .exams-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding-inline: 0.85rem;
+  }
+
+  .page-exams-management .btn-create-exam,
+  .page-exams-management .search-box {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .search-box__input {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .page-exams-management .exams-board {
+    width: calc(100% - 1.5rem);
+    margin: 1rem auto 2rem;
+    padding: 1rem 0.85rem;
+  }
+
+  .page-exams-management .exams-board__title {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.65rem 1rem;
+    font-size: clamp(1.1rem, 5vw, 1.5rem);
+    box-sizing: border-box;
+  }
+
+  /* Tarjeta de examen en el listado */
+  .page-exams-management .mgmt-exam-card {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+    padding: 1rem 0.85rem;
+  }
+
+  .page-exams-management .mgmt-exam-card__body,
+  .page-exams-management .mgmt-exam-card__aside {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .page-exams-management .mgmt-exam-card__name,
+  .page-exams-management .mgmt-exam-card__description,
+  .page-exams-management .mgmt-exam-card__code {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .page-exams-management .mgmt-exam-card__name {
+    font-size: 1.15rem;
+    padding: 0.55rem 0.9rem;
+  }
+
+  .page-exams-management .btn-view-exam,
+  .page-exams-management .btn-edit-exam,
+  .page-exams-management .btn-delete-exam {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Cabecera superior de Ver / Editar / Crear */
+  .page-exams-management .editor-header-bar,
+  .page-exams-management .preview-panel__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    width: calc(100% - 1.5rem);
+    margin: 1rem auto 0.75rem;
+    padding: 0.85rem;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .editor-user-greeting,
+  .page-exams-management .btn-save-exam-changes,
+  .page-exams-management .btn-save-new-exam,
+  .page-exams-management .preview-panel__badge {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 44px;
+    padding: 0.6rem 0.9rem;
+    font-size: clamp(0.95rem, 4vw, 1.2rem);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Campos de detalles en Editar y Crear */
+  .page-exams-management .exam-details-editor,
+  .page-exams-management .create-exam-card,
+  .page-exams-management .preview-panel__meta,
+  .page-exams-management .preview-questions-list,
+  .page-exams-management .edit-questions-list,
+  .page-exams-management .create-questions-list,
+  .page-exams-management .editor-add-question-row {
+    width: calc(100% - 1.5rem);
+    margin-inline: auto;
+    padding-inline: 0.85rem;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .editor-field__label,
+  .page-exams-management .editor-field__input,
+  .page-exams-management .editor-field__textarea,
+  .page-exams-management .create-code-input,
+  .page-exams-management .create-title-input,
+  .page-exams-management .create-desc-textarea,
+  .page-exams-management .create-duration-input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+  }
+
+  /* Temporizador y metadatos */
+  .page-exams-management .timer-box {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .page-exams-management .timer-box__units {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .page-exams-management .timer-input {
+    width: 42px;
+    height: 42px;
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 0;
+  }
+
+  /* Tarjetas de preguntas y opciones */
+  .page-exams-management .editable-question-card,
+  .page-exams-management .preview-question-card {
+    padding: 0.9rem 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .editable-question-card__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .page-exams-management .question-title-input,
+  .page-exams-management .question-statement-input,
+  .page-exams-management .option-description-input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .question-statement-input {
+    min-height: 90px;
+    margin: 0.5rem 0;
+  }
+
+  .page-exams-management .editable-option-row {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .page-exams-management .option-description-input {
+    flex: 1 1 180px;
+  }
+
+  .page-exams-management .btn-remove-question,
+  .page-exams-management .btn-add-question,
+  .page-exams-management .btn-save-single-question {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  /* Modal eliminar examen */
+  .page-exams-management .modal-card--delete-exam {
+    width: calc(100% - 1.5rem);
+    max-width: 440px;
+    padding: 1.25rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .page-exams-management .btn-confirm-delete-exam {
+    width: 100%;
+  }
+}
