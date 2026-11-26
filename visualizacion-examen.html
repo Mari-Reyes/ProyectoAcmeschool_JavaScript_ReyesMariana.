@@ -172,13 +172,19 @@
         </article>
       </div>
 
-      <div class="submit-section">
-        <button type="submit" id="btn-send-answers" class="btn-send-answers">
-          Enviar respuestas.
-          <!-- Agregar ícono de envío manualmente aquí -->
-          <span class="manual-icon" data-slot="send-icon"></span>
-        </button>
-      </div>
+      <form id="exam-runner-form" class="questions-section" novalidate>
+        <div class="questions-container" id="questions-container"></div>
+
+        <div class="submit-section">
+          <button type="submit" id="btn-send-answers" class="btn-send-answers">
+            Enviar respuestas.
+            <span class="manual-icon" data-slot="send-icon">
+              <img src="./assets/images/icons/send.svg" alt="" aria-hidden="true" />
+            </span>
+          </button>
+        </div>
+      </form>
+      
     </form>
   </main>
 

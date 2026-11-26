@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./assets/styles/main.css" />
   <link rel="stylesheet" href="./assets/styles/themes.css" />
   <link rel="stylesheet" href="./assets/styles/responsive.css" />
-  <link rel="prefetch" href="index.html"/>
+  <link rel="prefetch" href="./index.html"/>
   <link rel="prefetch" href="registro-estudiante.html" />
   <link rel="prefetch" href="visualizacion-examen.html" />
   <link rel="prefetch" href="resultado-estudiante.html" />
@@ -22,12 +22,14 @@
       aria-label="Página principal"
     >
       <!-- Agregar ícono de casa manualmente aquí -->
-      <span class="manual-icon" data-slot="home-icon"></span>
+      <span class="manual-icon" data-slot="home-icon">
+        <img src="./assets/images/icons/home.svg" alt="" aria-hidden="true" />
+      </span>
     </a>
 
     <nav class="nav-links" aria-label="Navegación principal">
       <a
-        href="vista-estudiante.html"
+        href="index.html"
         class="nav-item"
         data-nav="exams"
       >

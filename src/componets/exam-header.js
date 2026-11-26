@@ -44,9 +44,12 @@ export function renderStudentExamHeader({ exam = {}, student = null, totalQuesti
   // Cantidad de preguntas
   setText('#exam-total-questions', String(questionCount));
   setText('#preview-total-questions', String(questionCount));
+  setText('#runner-total-questions', String(questionCount));
+  setText('.status-box--questions .status-box__value', String(questionCount));
   document.querySelectorAll('[data-total-questions]').forEach((el) => {
     el.textContent = String(questionCount);
   });
+
 
   // Porcentaje de aprobación
   const approvalText = `Porcentaje aprobación: ${approvalPercentage}%`;

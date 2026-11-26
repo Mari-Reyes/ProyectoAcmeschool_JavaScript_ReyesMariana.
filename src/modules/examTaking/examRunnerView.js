@@ -40,52 +40,61 @@ export function renderQuestionStep({
 } = {}) {
   if (!Array.isArray(questions) || questions.length === 0) return 0;
 
-  const safeIndex = Math.max(0, Math.min(questions.length - 1, Number(currentIndex) || 0));
-  const question = questions[safeIndex];
+  const container =
+    document.getElementById('questions-container') ||
+    document.getElementById('question-options-container');
 
-  const numberTitleEl =
-    document.getElementById('question-number-title') ||
-    document.querySelector('[data-question-number-text]');
-  const statementEl =
-    document.getElementById('question-statement') ||
-    document.querySelector('[data-question-statement]');
-  const optionsContainer =
-    document.getElementById('question-options-container') ||
-    document.getElementById('questions-container');
+  if (!container) return 0;
 
-  if (numberTitleEl) {
-    numberTitleEl.textContent =
-      question.title || `Pregunta ${question.number ?? safeIndex + 1}`;
-  }
+  container.innerHTML = '';
 
-  if (statementEl) {
-    statementEl.textContent = question.statement ?? '';
-  }
+  questions.forEach((question, qIndex) => {
+    const questionNumber = question.number ?? qIndex + 1;
+    const questionTitle = question.title || `Pregunta ${questionNumber}`;
 
-  if (optionsContainer) {
-    optionsContainer.innerHTML = '';
+    const article = document.createElement('article');
+    article.className = 'question-block';
+    article.dataset.questionId = String(question.id ?? '');
+    article.dataset.questionNumber = String(questionNumber);
+
+    const heading = document.createElement('h2');
+    heading.className = 'question-block__title';
+    heading.textContent = questionTitle;
+
+    const statement = document.createElement('div');
+    statement.className = 'question-block__statement';
+    statement.textContent = question.statement ?? '';
+
+    const optionsGroup = document.createElement('div');
+    optionsGroup.className = 'question-block__options';
+    optionsGroup.setAttribute('role', 'radiogroup');
+    optionsGroup.setAttribute('aria-label', `Opciones de ${questionTitle}`);
+
     const options = Array.isArray(question.options) ? question.options : [];
+    const groupName = `question-${question.id ?? questionNumber}`;
 
     options.forEach((opt, optIdx) => {
-      const isSelected = answers[question.id] === opt.id;
+      const optionValue = String(opt.id ?? optIdx);
+      const isSelected = String(answers[question.id] ?? '') === optionValue;
+
       const label = document.createElement('label');
       label.className = isSelected
         ? 'answer-option exam-option-item is-selected'
         : 'answer-option exam-option-item';
-      label.dataset.optionId = String(opt.id);
+      label.dataset.optionId = optionValue;
       label.dataset.optionIndex = String(optIdx);
 
       const radio = document.createElement('input');
       radio.type = 'radio';
-      radio.name = `question-${question.id}`;
-      radio.value = String(opt.id);
+      radio.name = groupName;
+      radio.value = optionValue;
       radio.className = 'answer-option__radio';
       radio.checked = isSelected;
 
       radio.addEventListener('change', () => {
         showAnswerSavedToast('¡Se ha guardado tu respuesta con éxito!');
         if (typeof onSelectOption === 'function') {
-          onSelectOption(question.id, opt.id);
+          onSelectOption(question.id, opt.id ?? optionValue);
         }
       });
 
@@ -98,12 +107,17 @@ export function renderQuestionStep({
       textSpan.textContent = opt.text ?? '';
 
       label.append(radio, circle, textSpan);
-      optionsContainer.appendChild(label);
+      optionsGroup.appendChild(label);
     });
-  }
 
+    article.append(heading, statement, optionsGroup);
+    container.appendChild(article);
+  });
+
+  const safeIndex = Math.max(0, Math.min(questions.length - 1, Number(currentIndex) || 0));
   return safeIndex;
 }
+
 
 /**
  * Renderiza toda la información de la pantalla de resultado del estudiante.

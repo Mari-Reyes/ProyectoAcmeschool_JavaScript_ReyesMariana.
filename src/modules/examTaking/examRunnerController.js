@@ -156,7 +156,6 @@ export function initStudentExamsCatalog({
   renderFilteredList();
 }
 
-
 /**
  * Inicializa el registro previo del estudiante antes de iniciar la prueba.
  */
@@ -199,49 +198,51 @@ export function initStudentExamRegistration({
   const accessBox = document.getElementById('exam-access-box');
   const startExamBtn = document.getElementById('btn-start-exam');
 
-
   if (!form || !nameInput || !docInput) return;
 
   form.addEventListener('submit', (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  const docNumber = String(docInput.value ?? '').trim();
-  const fullName = String(nameInput.value ?? '').trim();
+    const docNumber = String(docInput.value ?? '').trim();
+    const fullName = String(nameInput.value ?? '').trim();
 
-  const isValid = isValidPersonName(fullName) && isValidDocumentNumber(docNumber) && Boolean(exam);
+    const isValid = isValidPersonName(fullName) && isValidDocumentNumber(docNumber) && Boolean(exam);
 
-  if (!isValid) {
-    approvedBanner?.classList.add('is-hidden');
-    invalidBanner?.classList.remove('is-hidden');
-    return;
-  }
+    if (!isValid) {
+      approvedBanner?.classList.add('is-hidden');
+      invalidBanner?.classList.remove('is-hidden');
+      return;
+    }
 
-  invalidBanner?.classList.add('is-hidden');
-  approvedBanner?.classList.remove('is-hidden');
+    invalidBanner?.classList.add('is-hidden');
+    approvedBanner?.classList.remove('is-hidden');
 
-  if (accessBox) {
-    accessBox.classList.remove('is-locked');
-    accessBox.dataset.locked = 'false';
-  }
-  if (startExamBtn) {
-    startExamBtn.disabled = false;
-  }
+    if (accessBox) {
+      accessBox.classList.remove('is-locked');
+      accessBox.dataset.locked = 'false';
+    }
+    if (startExamBtn) {
+      startExamBtn.disabled = false;
+      startExamBtn.onclick = () => {
+        window.location.href = 'visualizacion-examen.html';
+      };
+    }
 
-  const nextSession = {
-    exam,
-    student: { name: fullName, document: docNumber },
-    answers: {},
-    currentIndex: 0,
-    startedAt: new Date().toISOString()
-  };
+    const nextSession = {
+      exam,
+      student: { name: fullName, document: docNumber },
+      answers: {},
+      currentIndex: 0,
+      startedAt: new Date().toISOString()
+    };
 
-  setActiveStudentExamSession(nextSession);
+    setActiveStudentExamSession(nextSession);
 
-  if (typeof onProceed === 'function') {
-    onProceed(nextSession);
-  }
-    });
-  }
+    if (typeof onProceed === 'function') {
+      onProceed(nextSession);
+    }
+  });
+}
 
 /**
  * Inicializa la resolución activa del examen con cronómetro y navegación de preguntas.
@@ -268,6 +269,9 @@ export function initExamRunnerSession({
 
   const nextOrFinishBtn = document.getElementById('btn-next-question');
   const finishBtn = document.getElementById('btn-finish-exam');
+  const runnerForm = document.getElementById('exam-runner-form');
+  const sendAnswersBtn = document.getElementById('btn-send-answers');
+  const confirmSubmitBtn = document.getElementById('btn-confirm-submit-exam');
 
   const timer = new ExamTimerController({
     initialSeconds: exam.durationSeconds,
@@ -283,6 +287,38 @@ export function initExamRunnerSession({
       submitExamAttempt(snapshot.remainingSeconds, true);
     }
   });
+
+  function hasMissingAnswers() {
+    if (!Array.isArray(exam.questions) || exam.questions.length === 0) return false;
+    return exam.questions.some((q) => !answers[q.id]);
+  }
+
+  function submitExamAttempt(remainingSec, autoByTimeout = false) {
+    if (submitted) return;
+    submitted = true;
+    timer.stop();
+
+    const attempt = evaluateAndSaveExamAttempt({
+      exam,
+      student,
+      answers,
+      remainingSeconds: remainingSec,
+      autoSubmittedByTimeout: autoByTimeout
+    });
+
+    if (typeof onFinishExam === 'function') onFinishExam(attempt);
+  }
+
+  function handleSendAnswersAttempt(event) {
+    if (event) event.preventDefault();
+
+    if (hasMissingAnswers()) {
+      openModal('modal-missing-answers');
+      return;
+    }
+
+    openModal('modal-confirm-answers');
+  }
 
   function paintQuestion() {
     currentIndex = renderQuestionStep({
@@ -305,26 +341,6 @@ export function initExamRunnerSession({
       const isLast = currentIndex >= exam.questions.length - 1;
       nextOrFinishBtn.textContent = isLast ? 'Finalizar examen' : 'Siguiente pregunta';
     }
-  }
-
-  function hasMissingAnswers() {
-    return exam.questions.some((q) => !answers[q.id]);
-  }
-
-  function submitExamAttempt(remainingSec, autoByTimeout = false) {
-    if (submitted) return;
-    submitted = true;
-    timer.stop();
-
-    const attempt = evaluateAndSaveExamAttempt({
-      exam,
-      student,
-      answers,
-      remainingSeconds: remainingSec,
-      autoSubmittedByTimeout: autoByTimeout
-    });
-
-    if (typeof onFinishExam === 'function') onFinishExam(attempt);
   }
 
   if (nextOrFinishBtn) {
@@ -381,6 +397,24 @@ export function initExamRunnerSession({
     });
   }
 
+  if (runnerForm) {
+    runnerForm.addEventListener('submit', handleSendAnswersAttempt);
+  }
+
+  if (sendAnswersBtn) {
+    sendAnswersBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      handleSendAnswersAttempt(event);
+    });
+  }
+
+  if (confirmSubmitBtn) {
+    confirmSubmitBtn.addEventListener('click', () => {
+      closeModal('modal-confirm-answers');
+      submitExamAttempt(timer.getRemainingSeconds(), false);
+    });
+  }
+
   paintQuestion();
   timer.start();
 }
@@ -407,3 +441,4 @@ export function initStudentResultScreen({
     });
   }
 }
+
