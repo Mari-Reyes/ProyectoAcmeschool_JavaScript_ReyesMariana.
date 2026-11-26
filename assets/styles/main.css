@@ -615,10 +615,10 @@ body.is-time-expired .questions-section,body.is-time-expired #exam-runner-form{p
 .portal-card__title{display:none}
 .portal-card{font-size:1rem}
 #portal-card-overview{grid-column:1/-1;color:#fff;font-size:1.15rem;text-align:justify}
-#portal-card-actions{padding:1.4rem;border-radius:var(--r-md);background:var(--steel);font-family:var(--font-display);text-align:justify}
+#portal-card-actions{grid-column:1/-1;padding:1.4rem;border-radius:var(--r-md);background:var(--steel);font-family:var(--font-display);text-align:justify}
 .portal-card__buttons{display:flex;flex-direction:column;gap:.7rem;margin-top:1rem;font-family:var(--font-body)}
 .btn-portal-action{display:block;padding:.85rem 1rem;border-radius:var(--r-pill);background:var(--navy);color:#fff;font-weight:700;font-size:.9rem;text-align:center}
-.portal-cards-section::after{content:"";grid-column:2;grid-row:2;border-radius:var(--r-sm);background:var(--slate) center/cover}
+
 
 /* ===== PERFIL ===== */
 .profile-panel-section{width:min(100% - 2.5rem,700px);margin:2rem auto 3rem}
