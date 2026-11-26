@@ -346,6 +346,15 @@ button{cursor:pointer;border:0}
   margin: 0;
 }
 
+.exam-header-card__grid,
+.result-card__top-grid,
+.result-card__metrics,
+.exam-status-panel {
+  width: min(100% - 2.5rem, 780px);
+  margin-inline: auto;
+}
+
+
 .locked-field{padding:.6rem 1rem;border-radius:var(--r-pill);background:var(--ice);color:var(--ink);font-weight:700;text-align:center;user-select:none;cursor:not-allowed}
 .exam-runner-main .registered-user-panel>.locked-field{grid-column:2}
 .exam-status-panel{display:grid;grid-template-columns:1fr 1.5fr;gap:.9rem}
@@ -599,6 +608,7 @@ body.is-time-expired .questions-section,body.is-time-expired #exam-runner-form{p
     grid-template-columns: 1fr;
   }
 }
+
 
 /* ===== PORTAL ACADÉMICO ===== */
 .portal-cards-section{width:min(100% - 2.5rem,640px);margin:2rem auto 3rem;padding:1.8rem;border-radius:var(--r-md);background:var(--ink);display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
