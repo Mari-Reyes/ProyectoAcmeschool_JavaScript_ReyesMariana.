@@ -85,8 +85,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'MAT-101',
     title: 'Álgebra y Funciones Lineales',
     description: 'Evaluación sobre ecuaciones lineales, pendiente de una recta, sistemas de dos incógnitas y funciones afines.',
-    durationMinutes: 30,
-    durationSeconds: 1800,
+    durationMinutes: 1,
+    durationSeconds: 60,
     approvalPercentage: 70,
     questions: [
       {
@@ -132,8 +132,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'LEN-102',
     title: 'Comprensión Lectora y Gramática',
     description: 'Prueba diagnóstica sobre idea principal, inferencia textual, categorías gramaticales y ortografía.',
-    durationMinutes: 25,
-    durationSeconds: 1500,
+    durationMinutes: 2,
+    durationSeconds: 120,
     approvalPercentage: 70,
     questions: [
       {
@@ -179,8 +179,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'CIE-103',
     title: 'Biología Celular y Genética Básica',
     description: 'Evaluación sobre organelos celulares, transporte de membrana, mitosis y principios de herencia.',
-    durationMinutes: 30,
-    durationSeconds: 1800,
+    durationMinutes: 1,
+    durationSeconds: 60,
     approvalPercentage: 70,
     questions: [
       {
@@ -226,8 +226,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'HIS-104',
     title: 'Historia Universal y Procesos Contemporáneos',
     description: 'Repaso de revoluciones políticas, industrialización, guerras mundiales y organización internacional.',
-    durationMinutes: 20,
-    durationSeconds: 1200,
+    durationMinutes: 2,
+    durationSeconds: 120,
     approvalPercentage: 70,
     questions: [
       {
@@ -273,8 +273,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'FIS-105',
     title: 'Cinemática y Leyes de Newton',
     description: 'Evaluación sobre movimiento rectilíneo, aceleración, fuerza neta, inercia y acción-reacción.',
-    durationMinutes: 30,
-    durationSeconds: 1800,
+    durationMinutes: 1,
+    durationSeconds: 60,
     approvalPercentage: 70,
     questions: [
       {
@@ -320,8 +320,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'QUI-106',
     title: 'Química General y Tabla Periódica',
     description: 'Conceptos de átomos, enlaces químicos, configuración electrónica, valencia y reacciones básicas.',
-    durationMinutes: 25,
-    durationSeconds: 1500,
+    durationMinutes: 2,
+    durationSeconds: 120,
     approvalPercentage: 70,
     questions: [
       {
@@ -367,8 +367,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'ING-107',
     title: 'Inglés Básico y Estructuras del Presente',
     description: 'Evaluación de vocabulario cotidiano, uso del verbo to be, presente simple y expresiones frecuentes.',
-    durationMinutes: 20,
-    durationSeconds: 1200,
+    durationMinutes: 1,
+    durationSeconds: 60,
     approvalPercentage: 70,
     questions: [
       {
@@ -414,8 +414,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'GEO-108',
     title: 'Geografía Física y Cartografía',
     description: 'Preguntas sobre coordenadas geográficas, relieve, climas, hidrografía y lectura de mapas.',
-    durationMinutes: 20,
-    durationSeconds: 1200,
+    durationMinutes: 2,
+    durationSeconds: 120,
     approvalPercentage: 70,
     questions: [
       {
@@ -461,8 +461,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'TIC-109',
     title: 'Fundamentos de Computación y Lógica Digital',
     description: 'Evaluación sobre hardware y software, sistemas numéricos, algoritmos básicos y buenas prácticas digitales.',
-    durationMinutes: 25,
-    durationSeconds: 1500,
+    durationMinutes: 1,
+    durationSeconds: 60,
     approvalPercentage: 70,
     questions: [
       {
@@ -508,8 +508,8 @@ export const SEED_EXAMS = Object.freeze([
     code: 'CIV-110',
     title: 'Educación Cívica y Convivencia Escolar',
     description: 'Principios de participación democrática, deberes y derechos, resolución pacífica de conflictos y ciudadanía.',
-    durationMinutes: 20,
-    durationSeconds: 1200,
+    durationMinutes: 2,
+    durationSeconds: 120,
     approvalPercentage: 70,
     questions: [
       {

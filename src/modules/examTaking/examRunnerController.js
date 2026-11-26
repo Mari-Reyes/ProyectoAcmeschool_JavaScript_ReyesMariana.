@@ -89,29 +89,73 @@ export function initStudentExamsCatalog({
     document.querySelector('[data-student-exams-list]');
   if (!container) return;
 
+  const searchInput =
+    document.getElementById('input-search-exam-id') ||
+    document.getElementById('search-exams-input') ||
+    document.querySelector('[data-search-exams]');
+
+  const searchBtn = document.getElementById('btn-search-exam-id');
+  const boardTitleEl = document.getElementById('exams-board-title');
+  const emptyStateEl = document.getElementById('exams-empty');
   const exams = shuffleArray(loadAvailableExams());
   const session = getActiveStudentExamSession();
   const studentDoc = session?.student?.document ?? '';
 
-  renderExamCardsList(container, exams, (exam) =>
-    createStudentExamCard(exam, {
-      isCompleted: isExamCompletedByStudent(exam.id, studentDoc),
-      isLocked: false,
-      onStart: (selectedExam) => {
-        setActiveStudentExamSession({
-          exam: selectedExam,
-          student: null,
-          answers: {},
-          currentIndex: 0
+  function renderFilteredList() {
+    const rawValue = String(searchInput?.value ?? '');
+    const query = rawValue.trim().toLowerCase();
+
+    if (boardTitleEl) {
+      boardTitleEl.textContent =
+        rawValue.length > 0 ? 'Resultados de busqueda:' : 'Lista de exámenes disponibles';
+    }
+
+    const filtered = !query
+      ? exams
+      : exams.filter((exam) => {
+          const code = String(exam?.code ?? '').toLowerCase();
+          const title = String(exam?.title ?? exam?.name ?? '').toLowerCase();
+          const desc = String(exam?.description ?? '').toLowerCase();
+          return code.includes(query) || title.includes(query) || desc.includes(query);
         });
-        if (typeof onStartExam === 'function') onStartExam(selectedExam);
-      },
-      onViewResult: (selectedExam) => {
-        if (typeof onViewResult === 'function') onViewResult(selectedExam);
-      }
-    })
-  );
+
+    if (emptyStateEl) {
+      emptyStateEl.classList.toggle('is-hidden', filtered.length > 0);
+    }
+
+    renderExamCardsList(container, filtered, (exam) =>
+      createStudentExamCard(exam, {
+        isCompleted: isExamCompletedByStudent(exam.id, studentDoc),
+        isLocked: false,
+        onStart: (selectedExam) => {
+          setActiveStudentExamSession({
+            exam: selectedExam,
+            student: null,
+            answers: {},
+            currentIndex: 0
+          });
+          if (typeof onStartExam === 'function') onStartExam(selectedExam);
+        },
+        onViewResult: (selectedExam) => {
+          if (typeof onViewResult === 'function') onViewResult(selectedExam);
+        }
+      })
+    );
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', renderFilteredList);
+  }
+  if (searchBtn) {
+    searchBtn.addEventListener('click', () => {
+      renderFilteredList();
+      searchInput?.focus();
+    });
+  }
+
+  renderFilteredList();
 }
+
 
 /**
  * Inicializa el registro previo del estudiante antes de iniciar la prueba.
@@ -123,51 +167,81 @@ export function initStudentExamRegistration({
   const exams = loadAvailableExams();
   const exam = session?.exam ? normalizeExamSchema(session.exam) : exams[0] ?? null;
 
+  const titleEl = document.querySelector('[data-exam-title]');
+  const examName = String(exam?.title ?? exam?.name ?? '').trim();
+  if (titleEl && examName) {
+    titleEl.textContent = examName;
+  }
+
   if (exam) {
     renderStudentExamHeader({ exam, totalQuestions: exam.questions.length });
   }
 
   const form =
+    document.getElementById('student-register-form') ||
     document.getElementById('student-registration-form') ||
     document.querySelector('[data-student-registration-form]');
-  const nameInput =
-    document.getElementById('student-name-input') ||
-    document.querySelector('[name="studentName"]');
+
   const docInput =
+    document.getElementById('student-id') ||
     document.getElementById('student-id-input') ||
+    document.querySelector('[name="studentId"]') ||
     document.querySelector('[name="studentDocument"]');
+
+  const nameInput =
+    document.getElementById('student-fullname') ||
+    document.getElementById('student-name-input') ||
+    document.querySelector('[name="studentFullname"]') ||
+    document.querySelector('[name="studentName"]');
+
+  const approvedBanner = document.getElementById('status-data-approved');
+  const invalidBanner = document.getElementById('status-data-invalid');
+  const accessBox = document.getElementById('exam-access-box');
+  const startExamBtn = document.getElementById('btn-start-exam');
+
 
   if (!form || !nameInput || !docInput) return;
 
   form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    const fullName = String(nameInput.value ?? '').trim();
-    const docNumber = String(docInput.value ?? '').trim();
+  const docNumber = String(docInput.value ?? '').trim();
+  const fullName = String(nameInput.value ?? '').trim();
 
-    if (!isValidPersonName(fullName) || !isValidDocumentNumber(docNumber) || !exam) {
-      setAlertMessage({
-        modalId: 'modal-student-validation',
-        messageSelector: '#modal-student-validation-message',
-        message:
-          'Completa correctamente tu nombre y apellido (solo letras y espacios) y tu número de identificación (solo números).',
-        open: true
-      });
-      return;
-    }
+  const isValid = isValidPersonName(fullName) && isValidDocumentNumber(docNumber) && Boolean(exam);
 
-    const nextSession = {
-      exam,
-      student: { name: fullName, document: docNumber },
-      answers: {},
-      currentIndex: 0,
-      startedAt: new Date().toISOString()
-    };
+  if (!isValid) {
+    approvedBanner?.classList.add('is-hidden');
+    invalidBanner?.classList.remove('is-hidden');
+    return;
+  }
 
-    setActiveStudentExamSession(nextSession);
-    if (typeof onProceed === 'function') onProceed(nextSession);
-  });
-}
+  invalidBanner?.classList.add('is-hidden');
+  approvedBanner?.classList.remove('is-hidden');
+
+  if (accessBox) {
+    accessBox.classList.remove('is-locked');
+    accessBox.dataset.locked = 'false';
+  }
+  if (startExamBtn) {
+    startExamBtn.disabled = false;
+  }
+
+  const nextSession = {
+    exam,
+    student: { name: fullName, document: docNumber },
+    answers: {},
+    currentIndex: 0,
+    startedAt: new Date().toISOString()
+  };
+
+  setActiveStudentExamSession(nextSession);
+
+  if (typeof onProceed === 'function') {
+    onProceed(nextSession);
+  }
+    });
+  }
 
 /**
  * Inicializa la resolución activa del examen con cronómetro y navegación de preguntas.

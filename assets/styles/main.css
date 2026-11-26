@@ -60,11 +60,30 @@ button{cursor:pointer;border:0}
   background:var(--slate);color:#fff;padding:.9rem 1.6rem;border-radius:var(--r-md);max-width:520px;font-size:1.05rem}
 .portal-hero__subtitle{font-weight:700;border-radius:var(--r-pill);width:min(100%,570px)}
 
-/* Encabezados tipo hero de páginas sin slot de imagen */
-.register-card__header,.exam-header-card>.exam-header-card__title,.result-card>.result-card__title{position:relative}
-.register-card__header{display:flex;flex-direction:column;align-items:center;gap:1.4rem;padding:3rem 1.25rem;text-align:center;
-  background:var(--slate-dark) var(--img-register-hero) center/cover no-repeat}
-.register-card__lead{background:var(--brown);color:#fff;padding:.9rem 1.6rem;border-radius:var(--r-md);max-width:520px}
+/* Encabezado de registro del estudiante */
+.register-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 3rem 1.25rem;
+  text-align: center;
+  background: var(--slate-dark) var(--img-register-hero) center/cover no-repeat;
+}
+
+.register-hero {
+  width: min(100% - 2.5rem, 780px);
+  margin: 1.5rem auto 0;
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.register-hero__img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+}
 
 /* ===== BUSCADOR ===== */
 .search-bar-section{padding:1.75rem 1.25rem 0}
@@ -98,6 +117,85 @@ button{cursor:pointer;border:0}
 .btn-edit-exam,.btn-delete-exam{padding:.55rem 1rem;border-radius:var(--r-pill);color:#fff;font-weight:700}
 .btn-edit-exam{background:var(--green)}
 .btn-delete-exam{background:var(--red)}
+
+.student-exam-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.4rem;
+  border-radius: var(--r-md);
+  background: var(--card);
+  transition: transform var(--ease), box-shadow var(--ease);
+}
+
+.student-exam-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-up);
+}
+
+.student-exam-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .8rem;
+  text-align: center;
+}
+
+.student-exam-card__code {
+  width: 100%;
+  padding: .35rem 1rem;
+  border-radius: var(--r-pill);
+  background: var(--sand);
+  color: var(--brown);
+  font-weight: 700;
+  font-size: .85rem;
+}
+
+.student-exam-card__title {
+  padding: .6rem 1.6rem;
+  border-radius: var(--r-md);
+  background: var(--brown);
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.35rem;
+}
+
+.student-exam-card__description {
+  font-size: .9rem;
+}
+
+.student-exam-card__aside {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+
+.exam-completion-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .55rem 1rem;
+  border-radius: var(--r-pill);
+  background: var(--ice);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: .82rem;
+}
+
+.student-exam-card.is-completed .exam-completion-status {
+  background: var(--green);
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .student-exam-card {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Estado vacío */
 .exams-empty,.users-empty{text-align:center;padding:1rem 0 1.5rem;font-size:1.05rem;animation:pageIn .5s ease}
@@ -138,6 +236,20 @@ button{cursor:pointer;border:0}
 .register-card__footer{margin:1.25rem auto 3rem}
 .btn-back-exams{display:block;padding:.9rem 1.4rem;border-radius:var(--r-pill);background:var(--mist);text-align:center;font-weight:500}
 .page-exam-result .btn-back-exams{display:inline-block;background:var(--ink);color:#fff;font-family:var(--font-display);font-style:italic;font-size:1.6rem;padding:.8rem 2.4rem;border-radius:var(--r-md)}
+
+.register-hero {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.register-hero__img {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+}
+
 
 /* ===== EXAMEN: ENCABEZADO ===== */
 .exam-runner-main,.result-main{display:flex;flex-direction:column}

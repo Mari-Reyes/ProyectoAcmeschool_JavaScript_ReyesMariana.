@@ -165,6 +165,25 @@ if (loginForm) {
       return;
     }
 
+    const openLogoutBtn =
+      document.getElementById('btn-open-logout-modal') ||
+      document.querySelector('[data-nav="logout"]');
+    if (openLogoutBtn) {
+      openLogoutBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+          openModal('modal-logout');
+    });
+  }
+
+  bindLogoutAction({
+    onLogout: () => {
+      clearActiveSession();
+      closeModal('modal-logout');
+      showToast('Sesión cerrada correctamente', { type: 'info' });
+      window.location.href = 'index.html';
+    }
+  });
+
 
 
     if (result.clearEmail) {
@@ -193,15 +212,6 @@ if (loginForm) {
   });
 }
 
-  const openLogoutBtn =
-    document.getElementById('btn-open-logout-modal') ||
-    document.querySelector('[data-nav="logout"]');
-  if (openLogoutBtn) {
-    openLogoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      openModal('modal-logout');
-    });
-  }
 
   bindLogoutAction({
     onLogout: () => {

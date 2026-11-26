@@ -8,8 +8,18 @@ function createManualSlot(slotName) {
   const span = document.createElement('span');
   span.className = 'manual-icon';
   span.dataset.slot = slotName;
+
+  if (slotName === 'clock-icon') {
+    const img = document.createElement('img');
+    img.src = './assets/images/icons/time.svg';
+    img.alt = '';
+    img.setAttribute('aria-hidden', 'true');
+    span.appendChild(img);
+  }
+
   return span;
 }
+
 
 function formatDurationMinutes(exam) {
   if (typeof exam?.durationMinutes === 'number' && Number.isFinite(exam.durationMinutes)) {

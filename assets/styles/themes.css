@@ -32,10 +32,6 @@
   --shadow-up:0 12px 26px rgba(18,26,41,.28);
   --ease:.28s cubic-bezier(.4,0,.2,1);
 
-  /* Imágenes de encabezado (poner url("img/...") donde no hay slot .manual-image) */
-  --img-register-hero:none;
-  --img-runner-hero:none;
-  --img-result-hero:none;
 }
 
 /* Fondo del <main> según página */
