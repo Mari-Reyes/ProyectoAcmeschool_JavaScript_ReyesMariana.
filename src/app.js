@@ -29,7 +29,12 @@ import {
   initExamRunnerSession,
   initStudentResultScreen
 } from './modules/examTaking/examRunnerController.js';
-import { initUsersController } from './modules/users/usersController.js';
+import {
+  initUsersController,
+  initUserProfile
+} from './modules/users/usersController.js';
+
+
 
 const PRIVATE_PAGES = new Set([
   'portal-home',
@@ -279,6 +284,14 @@ function bootstrapApp() {
       initStudentResultScreen({
         onBackToCatalog: () => {
           window.location.href = 'vista-estudiante.html';
+        }
+      });
+      break;
+
+    case 'user-profile':
+      initUserProfile({
+        onRequireAuth: () => {
+          window.location.href = 'index.html';
         }
       });
       break;

@@ -1,0 +1,326 @@
+@media (max-width: 640px) {
+  .navbar--private {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+  }
+
+  .nav-item {
+    font-size: 0.75rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .profile-card {
+    padding: 1rem;
+  }
+
+  .profile-card__top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .profile-card__instruction {
+    max-width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .profile-field-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .profile-field-btn,
+  .profile-field-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+}
+
+
+@media (max-width: 680px) {
+  .register-form,
+  .exam-access-box,
+  .register-card__footer {
+    width: min(100% - 1.5rem, 780px);
+  }
+
+  .register-card__header {
+    padding-inline: 1rem;
+    text-align: center;
+  }
+
+  .register-card__title {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+    line-height: 1.25;
+  }
+
+  .register-card__lead {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .form-field {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .form-field__label,
+  .form-field__input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+  }
+
+  .btn-submit-data {
+    width: 100%;
+    max-width: 320px;
+    font-size: 1.35rem;
+    padding: 0.7rem 1.4rem;
+  }
+
+  .status-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.35rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .status-banner__title {
+    font-size: 1.3rem;
+  }
+
+  .status-banner__text {
+    max-width: 100%;
+  }
+
+  .exam-access-box {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .exam-access-box__summary {
+    order: 1;
+    width: 100%;
+  }
+
+  .summary-pill--duration {
+    justify-content: space-between;
+  }
+
+  .exam-access-box__action {
+    grid-column: 1;
+    order: 2;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .btn-begin-exam {
+    width: 100%;
+    font-size: 1.4rem;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+  }
+
+  .btn-back-exams {
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .exam-header-card,
+  .exam-header-card__grid,
+  .registered-user-panel,
+  .exam-status-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* Apila "Preguntas: X", luego el temporizador en fila propia, y luego "Porcentaje aprobación" */
+  .exam-status-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .status-box,
+  .status-box--questions,
+  .status-box--timer,
+  .status-box--approval,
+  #exam-countdown {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Bajar el temporizador y centrar sus casillas Hr / Min / Seg */
+  .status-box--timer,
+  #exam-countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 0.75rem;
+  }
+
+  .countdown-units {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    max-width: 100%;
+  }
+
+  .countdown-num {
+    font-size: 1rem;
+    min-width: 2.1rem;
+    padding: 0.35rem 0.45rem;
+  }
+
+  .countdown-label {
+    font-size: 0.72rem;
+  }
+
+  .status-box--approval,
+  #runner-approval-box {
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   GESTIÓN DE USUARIOS (.page-users-management)
+   ========================================================================== */
+
+@media (max-width: 780px) {
+  .users-main,
+  .users-board,
+  .users-toolbar,
+  .users-list {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .users-main {
+    padding-inline: 0.9rem;
+    padding-block: 1.1rem 2rem;
+  }
+
+  .users-board__header,
+  .users-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .users-board__title {
+    font-size: clamp(1.35rem, 5vw, 1.9rem);
+    text-align: center;
+  }
+
+  #btn-open-create-user,
+  .btn-create-user {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .users-search-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  #input-search-user-name,
+  #btn-search-user {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .users-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .user-card {
+    padding: 0.95rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .user-card__field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .user-card__label {
+    font-size: 0.8rem;
+  }
+
+  .user-card__value {
+    width: 100%;
+    font-size: 0.9rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  /* Formularios dentro de modales de crear / editar usuario */
+  #create-user-form .form-field,
+  #modal-user-detail .form-field {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  #create-user-form .form-field__label,
+  #create-user-form .form-field__input,
+  #create-user-form .form-field__select,
+  #modal-user-detail .form-field__label,
+  #modal-user-detail .form-field__input,
+  #modal-user-detail .form-field__select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .modal-card__actions,
+  .user-detail-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .modal-card__actions button,
+  .user-detail-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

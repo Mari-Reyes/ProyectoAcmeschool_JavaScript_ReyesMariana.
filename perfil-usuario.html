@@ -23,7 +23,9 @@
       aria-label="Inicio del portal académico"
     >
       <!-- Agregar ícono de casa manualmente aquí -->
-      <span class="manual-icon" data-slot="home-icon"></span>
+      <span class="manual-icon" data-slot="home-icon">
+        <img src="./assets/images/icons/home.svg" alt="" aria-hidden="true" />
+      </span>
     </a>
 
     <nav class="nav-links" aria-label="Navegación portal académico">
@@ -64,7 +66,9 @@
     <!-- Encabezado superior con imagen manual -->
     <section class="profile-hero" aria-labelledby="profile-hero-title">
       <!-- Agregar imagen de fondo manualmente aquí -->
-      <div class="manual-image" data-slot="profile-hero-bg"></div>
+      <div class="manual-image" data-slot="profile-hero-bg">
+        <img src="./assets/images/hero/hero-user.png" alt="" aria-hidden="true" />
+      </div>
 
       <div class="profile-hero__box">
         <h1 class="profile-hero__title" id="profile-hero-title">
@@ -266,5 +270,12 @@
   <footer class="footer">
     <p>© 2026 ACME SCHOOL · EVALUACIONES PÚBLICAS Y GESTIÓN ACADÉMICA.</p>
   </footer>
+
+<script type="module" src="./src/app.js"></script>
+<script type="module" src="./src/modules/users/usersController.js"></script>
+<script type="module" src="./src/data/seed.js"></script>
+<script type="module" src="./src/data/shema.js"></script>
+<script type="module" src="./src/storage/storageService.js"></script>
+
 </body>
 </html>

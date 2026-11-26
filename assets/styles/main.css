@@ -739,3 +739,18 @@ body[data-edit-mode="true"] .profile-field-btn{cursor:pointer}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+.modal-field.is-invalid,
+.modal-field[data-field-status="invalid"] {
+  background-color: #ffd6d6 !important;
+  border: 2px solid #c62828 !important;
+  border-radius: var(--r-md, 10px);
+  padding: 0.35rem 0.5rem;
+}
+
+.modal-field.is-invalid .modal-field__input,
+.modal-field[data-field-status="invalid"] .modal-field__input,
+.modal-field__input.is-invalid {
+  border: 2px solid #c62828 !important;
+  background-color: #ffecec !important;
+  color: #7f1d1d !important;
+}

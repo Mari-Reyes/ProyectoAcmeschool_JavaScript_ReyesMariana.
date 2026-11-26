@@ -71,13 +71,14 @@ export function isValidPhoneNumber(value) {
  */
 export function isValidPassword(value) {
   const pwd = String(value ?? '');
-  if (pwd.length < 8 || pwd.length > 12) return false;
+  if (pwd.length < 8 || pwd.length > 20) return false;
   const hasUpper = /[A-ZÁÉÍÓÚÜÑ]/.test(pwd);
   const hasLower = /[a-záéíóúüñ]/.test(pwd);
   const hasDigit = /\d/.test(pwd);
   const hasDot = /\./.test(pwd);
   return hasUpper && hasLower && hasDigit && hasDot;
 }
+
 
 /**
  * Valida un objeto de usuario y devuelve { valid, errors }.
