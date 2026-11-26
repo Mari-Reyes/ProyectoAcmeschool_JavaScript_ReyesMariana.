@@ -36,6 +36,58 @@ import {
 
 const EXAMS_STORAGE_KEY = 'acme_school_exams_v1';
 
+const FALLBACK_EXAMS = [
+  {
+    id: 'exam-seed-1',
+    code: 'MAT-101',
+    title: 'Fundamentos de Álgebra y Ecuaciones',
+    description:
+      'Evaluación sobre ecuaciones lineales, expresiones algebraicas y resolución de problemas.',
+    durationMinutes: 30,
+    durationSeconds: 1800,
+    approvalPercentage: 70,
+    questions: [
+      {
+        id: 'q-mat-1',
+        number: 1,
+        title: 'Pregunta 1',
+        statement: '¿Cuál es el valor de x en la ecuación 2x + 6 = 14?',
+        options: [
+          { id: 'opt-0', text: 'x = 4', isCorrect: true },
+          { id: 'opt-1', text: 'x = 10', isCorrect: false },
+          { id: 'opt-2', text: 'x = 3', isCorrect: false },
+          { id: 'opt-3', text: 'x = 8', isCorrect: false }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'exam-seed-2',
+    code: 'PROG-201',
+    title: 'Lógica y Estructuras en JavaScript',
+    description:
+      'Conceptos básicos de arreglos, funciones, objetos y control de flujo en JavaScript.',
+    durationMinutes: 40,
+    durationSeconds: 2400,
+    approvalPercentage: 70,
+    questions: [
+      {
+        id: 'q-prog-1',
+        number: 1,
+        title: 'Pregunta 1',
+        statement:
+          '¿Qué método agrega uno o más elementos al final de un arreglo en JavaScript?',
+        options: [
+          { id: 'opt-0', text: 'push()', isCorrect: true },
+          { id: 'opt-1', text: 'pop()', isCorrect: false },
+          { id: 'opt-2', text: 'shift()', isCorrect: false },
+          { id: 'opt-3', text: 'slice()', isCorrect: false }
+        ]
+      }
+    ]
+  }
+];
+
 export function loadExamsFromStorage() {
   try {
     const raw = localStorage.getItem(EXAMS_STORAGE_KEY);
@@ -80,18 +132,36 @@ export function filterExamsByQuery(exams = [], query = '') {
   });
 }
 
+function ensureSingleCorrectOption(questions = []) {
+  return (Array.isArray(questions) ? questions : []).map((q) => {
+    const opts = Array.isArray(q.options) ? q.options.map((o) => ({ ...o })) : [];
+    if (opts.length > 0 && !opts.some((o) => Boolean(o.isCorrect))) {
+      opts[0].isCorrect = true;
+    }
+    return { ...q, options: opts };
+  });
+}
+
 export function initExamsControllers({ onNavigate = null } = {}) {
   const session = getActiveSession();
   renderAuthenticatedUserGreeting(session);
 
   let allExams = loadExamsFromStorage();
+  if (allExams.length === 0) {
+    allExams = FALLBACK_EXAMS.map(normalizeExamSchema);
+    saveExamsToStorage(allExams);
+  }
+
   let activeExam = null;
   let editDraft = null;
   let createQuestionsDraft = [];
 
   const searchInput =
+    document.getElementById('input-search-exam-mgmt') ||
     document.getElementById('search-exams-input') ||
     document.querySelector('[data-search-exams]');
+
+  const searchBtn = document.getElementById('btn-search-exam-mgmt');
 
   const timerEditor = bindExamTimerEditor({
     onChange: ({ totalSeconds }) => {
@@ -118,7 +188,7 @@ export function initExamsControllers({ onNavigate = null } = {}) {
         const codeEl = document.getElementById('delete-exam-code');
         if (nameEl) nameEl.textContent = activeExam.title;
         if (codeEl) codeEl.textContent = activeExam.code;
-        setActiveExamSection('delete');
+        openModal('modal-delete-exam');
       }
     });
   }
@@ -159,8 +229,8 @@ export function initExamsControllers({ onNavigate = null } = {}) {
   }
 
   function openCreateSection() {
-    createQuestionsDraft = [];
-    updateQuestionCounter(0);
+    createQuestionsDraft = [createEmptyQuestion(1)];
+    updateQuestionCounter(createQuestionsDraft.length);
     renderQuestionsEditor({
       containerId: 'create-questions-list',
       mode: 'create',
@@ -179,9 +249,15 @@ export function initExamsControllers({ onNavigate = null } = {}) {
       refreshList(filterExamsByQuery(allExams, searchInput.value));
     });
   }
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      refreshList(filterExamsByQuery(allExams, searchInput.value));
+    });
+  }
 
   // Ir a sección Crear examen
   const goCreateBtn =
+    document.getElementById('btn-open-create-exam') ||
     document.getElementById('btn-go-create-exam') ||
     document.querySelector('[data-action="go-create-exam"]');
   if (goCreateBtn) {
@@ -229,55 +305,70 @@ export function initExamsControllers({ onNavigate = null } = {}) {
   }
 
   // Guardar cambios en Modificar examen
-  const saveEditBtn = document.getElementById('btn-save-edit-exam');
-  if (saveEditBtn) {
-    saveEditBtn.addEventListener('click', () => {
-      if (!editDraft) return;
-      const titleInput = document.getElementById('edit-exam-title');
-      const descInput = document.getElementById('edit-exam-description');
-      const approvalInput = document.getElementById('edit-approval-input');
+  const editForm = document.getElementById('edit-exam-form');
+  const saveEditBtn =
+    document.getElementById('btn-save-exam-changes') ||
+    document.getElementById('btn-save-edit-exam');
 
-      const collectedQuestions = collectQuestionsFromEditor(
-        'edit-questions-list',
-        'edit',
-        editDraft.questions
-      );
+  function handleSaveEditExam(event) {
+    if (event) event.preventDefault();
+    if (!editDraft) return;
 
-      const candidate = normalizeExamSchema({
-        ...editDraft,
-        code: editDraft.code,
-        title: capitalizeAfterPeriodOrNewline((titleInput?.value ?? editDraft.title).trim()),
-        description: capitalizeAfterPeriodOrNewline(
-          (descInput?.value ?? editDraft.description).trim()
-        ),
-        approvalPercentage: approvalInput
-          ? Math.max(1, Math.min(100, Number(approvalInput.value) || editDraft.approvalPercentage))
-          : editDraft.approvalPercentage,
-        durationSeconds: timerEditor.getDurationSeconds(),
-        durationMinutes: Math.max(1, Math.ceil(timerEditor.getDurationSeconds() / 60)),
-        questions: collectedQuestions
-      });
+    const titleInput = document.getElementById('edit-exam-title');
+    const descInput = document.getElementById('edit-exam-description');
+    const approvalInput = document.getElementById('edit-approval-input');
 
-      const validation = validateExamSchema(candidate);
-      if (!validation.valid) {
-        setAlertMessage({
-          modalId: 'modal-exam-error',
-          messageSelector: '#modal-exam-error-message',
-          message:
-            'Revisa que la información que escribiste cumple con las validaciones.',
-          open: true
-        });
-        return;
-      }
+    const collectedQuestions = ensureSingleCorrectOption(
+      collectQuestionsFromEditor('edit-questions-list', 'edit', editDraft.questions)
+    );
 
-      editDraft = candidate;
+    const candidate = normalizeExamSchema({
+      ...editDraft,
+      code: editDraft.code,
+      title: capitalizeAfterPeriodOrNewline((titleInput?.value ?? editDraft.title).trim()),
+      description: capitalizeAfterPeriodOrNewline(
+        (descInput?.value ?? editDraft.description).trim()
+      ),
+      approvalPercentage: approvalInput
+        ? Math.max(1, Math.min(100, Number(approvalInput.value) || editDraft.approvalPercentage))
+        : editDraft.approvalPercentage,
+      durationSeconds: timerEditor.getDurationSeconds(),
+      durationMinutes: Math.max(1, Math.ceil(timerEditor.getDurationSeconds() / 60)),
+      questions: collectedQuestions
+    });
+
+    const validation = validateExamSchema(candidate);
+    if (!validation.valid) {
+      const firstError =
+        Object.values(validation.errors || {})[0] ||
+        'Revisa que la información que escribiste cumple con las validaciones.';
       setAlertMessage({
-        modalId: 'modal-confirm-save-edit',
-        messageSelector: '#modal-confirm-save-edit-message',
-        message: '¿Estás seguro de guardar los cambios modificados?',
+        modalId: 'modal-exam-error',
+        messageSelector: '#modal-exam-error-message',
+        message: firstError,
         open: true
       });
-    });
+      showToast(firstError, { type: 'error' });
+      return;
+    }
+
+    editDraft = candidate;
+    const exists = allExams.some((item) => item.id === editDraft.id);
+    allExams = exists
+      ? allExams.map((item) => (item.id === editDraft.id ? editDraft : item))
+      : [...allExams, editDraft];
+
+    saveExamsToStorage(allExams);
+    refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));
+    setActiveExamSection('list');
+    showToast('Cambios guardados correctamente', { type: 'success' });
+  }
+
+  if (editForm) {
+    editForm.addEventListener('submit', handleSaveEditExam);
+  }
+  if (saveEditBtn) {
+    saveEditBtn.addEventListener('click', handleSaveEditExam);
   }
 
   const confirmSaveEditBtn = document.getElementById('btn-confirm-save-edit');
@@ -294,6 +385,7 @@ export function initExamsControllers({ onNavigate = null } = {}) {
         open: true
       });
       refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));
+      setActiveExamSection('list');
     });
   }
 
@@ -316,58 +408,73 @@ export function initExamsControllers({ onNavigate = null } = {}) {
   }
 
   // Guardar nuevo examen
-  const saveCreateBtn = document.getElementById('btn-save-create-exam');
-  if (saveCreateBtn) {
-    saveCreateBtn.addEventListener('click', () => {
-      const codeInput = document.getElementById('create-exam-code');
-      const titleInput = document.getElementById('create-exam-title');
-      const descInput = document.getElementById('create-exam-description');
-      const minutesInput = document.getElementById('create-exam-minutes');
-      const approvalInput = document.getElementById('create-exam-approval');
+  const createForm = document.getElementById('create-exam-form');
+  const saveCreateBtn =
+    document.getElementById('btn-save-new-exam') ||
+    document.getElementById('btn-save-create-exam');
 
-      const minutes = Math.max(1, Number(minutesInput?.value ?? 30) || 30);
-      const collectedQuestions = collectQuestionsFromEditor(
-        'create-questions-list',
-        'create',
-        createQuestionsDraft
-      );
+  function handleSaveCreateExam(event) {
+    if (event) event.preventDefault();
 
-      const newExam = normalizeExamSchema({
-        id: `exam-${Date.now()}`,
-        code: codeInput?.value?.trim() || '',
-        title: titleInput?.value?.trim() || '',
-        description: descInput?.value?.trim() || '',
-        durationMinutes: minutes,
-        durationSeconds: minutes * 60,
-        approvalPercentage: approvalInput ? Number(approvalInput.value) || 70 : 70,
-        questions: collectedQuestions.length ? collectedQuestions : [createEmptyQuestion(1)]
-      });
+    const codeInput = document.getElementById('create-exam-code');
+    const titleInput = document.getElementById('create-exam-title');
+    const descInput = document.getElementById('create-exam-description');
+    const minutesInput =
+      document.getElementById('create-exam-duration') ||
+      document.getElementById('create-exam-minutes');
+    const approvalInput = document.getElementById('create-exam-approval');
 
-      const validation = validateExamSchema(newExam, {
-        requireUniqueCodeCheck: (code) =>
-          allExams.some(
-            (existing) => String(existing.code).toUpperCase() === String(code).toUpperCase()
-          )
-      });
+    const minutes = Math.max(1, Number(minutesInput?.value ?? 30) || 30);
+    const collectedQuestions = ensureSingleCorrectOption(
+      collectQuestionsFromEditor('create-questions-list', 'create', createQuestionsDraft)
+    );
 
-      if (!validation.valid) {
-        setAlertMessage({
-          modalId: 'modal-exam-error',
-          messageSelector: '#modal-exam-error-message',
-          message:
-            'Revisa que la información que escribiste cumple con las validaciones.',
-          open: true
-        });
-        return;
-      }
-
-      allExams.push(newExam);
-      saveExamsToStorage(allExams);
-      showToast('Examen creado correctamente', { type: 'success' });
-      createQuestionsDraft = [];
-      refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));
-      setActiveExamSection('list');
+    const newExam = normalizeExamSchema({
+      id: `exam-${Date.now()}`,
+      code: codeInput?.value?.trim() || '',
+      title: titleInput?.value?.trim() || '',
+      description: descInput?.value?.trim() || '',
+      durationMinutes: minutes,
+      durationSeconds: minutes * 60,
+      approvalPercentage: approvalInput ? Number(approvalInput.value) || 70 : 70,
+      questions: collectedQuestions.length ? collectedQuestions : [createEmptyQuestion(1)]
     });
+
+    const validation = validateExamSchema(newExam, {
+      requireUniqueCodeCheck: (code) =>
+        allExams.some(
+          (existing) => String(existing.code).toUpperCase() === String(code).toUpperCase()
+        )
+    });
+
+    if (!validation.valid) {
+      const firstError =
+        Object.values(validation.errors || {})[0] ||
+        'Revisa que la información que escribiste cumple con las validaciones.';
+      setAlertMessage({
+        modalId: 'modal-exam-error',
+        messageSelector: '#modal-exam-error-message',
+        message: firstError,
+        open: true
+      });
+      showToast(firstError, { type: 'error' });
+      return;
+    }
+
+    allExams.push(newExam);
+    saveExamsToStorage(allExams);
+    showToast('Examen creado correctamente', { type: 'success' });
+    createQuestionsDraft = [];
+    if (createForm) createForm.reset();
+    refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));
+    setActiveExamSection('list');
+  }
+
+  if (createForm) {
+    createForm.addEventListener('submit', handleSaveCreateExam);
+  }
+  if (saveCreateBtn) {
+    saveCreateBtn.addEventListener('click', handleSaveCreateExam);
   }
 
   // Eliminar examen
@@ -375,12 +482,7 @@ export function initExamsControllers({ onNavigate = null } = {}) {
   if (triggerDeleteBtn) {
     triggerDeleteBtn.addEventListener('click', () => {
       if (!activeExam) return;
-      setAlertMessage({
-        modalId: 'modal-confirm-delete-exam',
-        messageSelector: '#modal-confirm-delete-exam-message',
-        message: '¿Estás seguro de eliminar este examen?',
-        open: true
-      });
+      openModal('modal-delete-exam');
     });
   }
 
@@ -390,7 +492,7 @@ export function initExamsControllers({ onNavigate = null } = {}) {
       if (!activeExam) return;
       allExams = allExams.filter((item) => item.id !== activeExam.id);
       saveExamsToStorage(allExams);
-      closeModal('modal-confirm-delete-exam');
+      closeModal('modal-delete-exam');
       showToast('Examen eliminado correctamente', { type: 'success' });
       activeExam = null;
       refreshList(filterExamsByQuery(allExams, searchInput?.value ?? ''));

@@ -69,28 +69,36 @@ export function renderQuestionsEditor({
 
   list.forEach((rawQ, qIdx) => {
     const q = normalizeQuestionSchema({ ...rawQ, number: qIdx + 1 }, qIdx);
+    list[qIdx] = q;
 
-    const wrapper = document.createElement('div');
-    wrapper.className = `${mode}-question-item`;
-    wrapper.dataset.questionIndex = String(qIdx);
+    const card = document.createElement('article');
+    card.className = 'editable-question-card';
+    card.dataset.questionId = String(q.id ?? '');
+    card.dataset.questionNumber = String(qIdx + 1);
+    card.dataset.questionIndex = String(qIdx);
 
     const headerRow = document.createElement('div');
-    headerRow.className = `${mode}-question-header`;
+    headerRow.className = 'editable-question-card__header';
 
     const titleInput = document.createElement('input');
     titleInput.type = 'text';
-    titleInput.className = `${mode}-question-title`;
+    titleInput.className = 'question-title-input';
+    titleInput.id = `${mode}-q-title-${qIdx + 1}`;
     titleInput.value = q.title;
-    titleInput.placeholder = `Título Pregunta ${qIdx + 1}`;
+    titleInput.placeholder = `Pregunta ${qIdx + 1}`;
+    titleInput.addEventListener('input', () => {
+      q.title = titleInput.value;
+      if (typeof onChange === 'function') onChange([...list]);
+    });
     titleInput.addEventListener('blur', () => {
       q.title = capitalizeAfterPeriodOrNewline(titleInput.value.trim());
       titleInput.value = q.title;
-      if (typeof onChange === 'function') onChange(list);
+      if (typeof onChange === 'function') onChange([...list]);
     });
 
     const deleteQuestionBtn = document.createElement('button');
     deleteQuestionBtn.type = 'button';
-    deleteQuestionBtn.className = `${mode}-remove-question-btn`;
+    deleteQuestionBtn.className = 'btn-remove-question';
     deleteQuestionBtn.textContent = 'Eliminar pregunta';
     deleteQuestionBtn.addEventListener('click', () => {
       const updated = removeQuestionFromList(list, qIdx);
@@ -100,54 +108,81 @@ export function renderQuestionsEditor({
 
     headerRow.append(titleInput, deleteQuestionBtn);
 
+    const bodyBox = document.createElement('div');
+    bodyBox.className = 'editable-question-card__body';
+
     const statementTextarea = document.createElement('textarea');
-    statementTextarea.className = `${mode}-question-statement`;
+    statementTextarea.className = 'question-statement-input';
+    statementTextarea.id = `${mode}-q-statement-${qIdx + 1}`;
     statementTextarea.value = q.statement;
-    statementTextarea.placeholder = 'Escribe el enunciado de la pregunta...';
+    statementTextarea.placeholder = '[Enunciado de la pregunta]';
+    statementTextarea.addEventListener('input', () => {
+      q.statement = statementTextarea.value;
+      if (typeof onChange === 'function') onChange([...list]);
+    });
     statementTextarea.addEventListener('blur', () => {
       q.statement = capitalizeAfterPeriodOrNewline(statementTextarea.value.trim());
       statementTextarea.value = q.statement;
-      if (typeof onChange === 'function') onChange(list);
+      if (typeof onChange === 'function') onChange([...list]);
     });
 
     const optionsList = document.createElement('div');
-    optionsList.className = `${mode}-options-list`;
+    optionsList.className = 'editable-options-group';
+    optionsList.setAttribute('role', 'radiogroup');
+    optionsList.setAttribute('aria-label', 'Seleccionar respuesta correcta');
+
+    const optionRows = [];
+    const radioName = `${mode}-correct-option-q${qIdx + 1}`;
 
     q.options.forEach((opt, optIdx) => {
       const optionRow = document.createElement('div');
       optionRow.className = opt.isCorrect
-        ? `${mode}-option-row is-selected`
-        : `${mode}-option-row`;
+        ? 'editable-option-row is-selected'
+        : 'editable-option-row';
+      optionRow.dataset.optionIndex = String(optIdx);
 
+      const radioId = `${mode}-q${qIdx + 1}-opt-${optIdx}`;
       const radio = document.createElement('input');
       radio.type = 'radio';
-      radio.name = `${mode}-correct-option-${qIdx}`;
+      radio.name = radioName;
+      radio.id = radioId;
+      radio.value = String(optIdx);
+      radio.className = 'correct-option-radio';
       radio.checked = Boolean(opt.isCorrect);
+
       radio.addEventListener('change', () => {
         q.options.forEach((o, i) => {
           o.isCorrect = i === optIdx;
         });
-        renderQuestionsEditor({ containerId, mode, questions: list, onChange });
-        if (typeof onChange === 'function') onChange(list);
+        optionRows.forEach((rowEl, i) => {
+          rowEl.classList.toggle('is-selected', i === optIdx);
+        });
+        if (typeof onChange === 'function') onChange([...list]);
       });
 
       const optionInput = document.createElement('input');
       optionInput.type = 'text';
-      optionInput.className = `${mode}-option-text`;
+      optionInput.className = 'option-description-input';
       optionInput.value = opt.text;
-      optionInput.placeholder = `Opción ${optIdx + 1}`;
+      optionInput.placeholder = `Opción de respuesta ${optIdx + 1}`;
+      optionInput.addEventListener('input', () => {
+        opt.text = optionInput.value;
+        if (typeof onChange === 'function') onChange([...list]);
+      });
       optionInput.addEventListener('blur', () => {
         opt.text = capitalizeAfterPeriodOrNewline(optionInput.value.trim());
         optionInput.value = opt.text;
-        if (typeof onChange === 'function') onChange(list);
+        if (typeof onChange === 'function') onChange([...list]);
       });
 
       optionRow.append(radio, optionInput);
+      optionRows.push(optionRow);
       optionsList.appendChild(optionRow);
     });
 
-    wrapper.append(headerRow, statementTextarea, optionsList);
-    container.appendChild(wrapper);
+    bodyBox.append(statementTextarea, optionsList);
+    card.append(headerRow, bodyBox);
+    container.appendChild(card);
   });
 }
 
@@ -162,23 +197,25 @@ export function collectQuestionsFromEditor(containerId, mode = 'edit', fallbackQ
     );
   }
 
-  const questionItems = container.querySelectorAll(`.${mode}-question-item`);
+  const questionItems = container.querySelectorAll('.editable-question-card');
   return Array.from(questionItems).map((itemEl, qIdx) => {
-    const rawTitle = itemEl.querySelector(`.${mode}-question-title`)?.value?.trim() || `Pregunta ${qIdx + 1}`;
-    const rawStatement = itemEl.querySelector(`.${mode}-question-statement`)?.value?.trim() || '';
-    const optionRows = itemEl.querySelectorAll(`.${mode}-option-row`);
+    const rawTitle =
+      itemEl.querySelector('.question-title-input')?.value?.trim() || `Pregunta ${qIdx + 1}`;
+    const rawStatement =
+      itemEl.querySelector('.question-statement-input')?.value?.trim() || '';
+    const optionRows = itemEl.querySelectorAll('.editable-option-row');
 
     const options = Array.from(optionRows).map((rowEl, optIdx) => ({
       id: `opt-${optIdx}`,
       text: capitalizeAfterPeriodOrNewline(
-        rowEl.querySelector(`.${mode}-option-text`)?.value?.trim() || ''
+        rowEl.querySelector('.option-description-input')?.value?.trim() || ''
       ),
-      isCorrect: Boolean(rowEl.querySelector('input[type="radio"]')?.checked)
+      isCorrect: Boolean(rowEl.querySelector('.correct-option-radio')?.checked)
     }));
 
     return normalizeQuestionSchema(
       {
-        id: fallbackQuestions[qIdx]?.id ?? `q-${Date.now()}-${qIdx + 1}`,
+        id: itemEl.dataset.questionId || fallbackQuestions[qIdx]?.id || `q-${Date.now()}-${qIdx + 1}`,
         number: qIdx + 1,
         title: capitalizeAfterPeriodOrNewline(rawTitle),
         statement: capitalizeAfterPeriodOrNewline(rawStatement),

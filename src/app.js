@@ -34,8 +34,6 @@ import {
   initUserProfile
 } from './modules/users/usersController.js';
 
-
-
 const PRIVATE_PAGES = new Set([
   'portal-home',
   'users-management',
@@ -51,7 +49,9 @@ function detectCurrentPageKey() {
     return 'users-management';
   }
   if (
+    document.getElementById('mgmt-exams-list') ||
     document.getElementById('exams-management-list') ||
+    document.getElementById('section-exams-main') ||
     document.getElementById('section-exams-list')
   ) {
     return 'exams-management';
@@ -94,89 +94,114 @@ function bindGlobalLoginAndSession() {
   }
 
   const loginForm =
-  document.getElementById('login-form') || document.querySelector('[data-login-form]');
-if (loginForm) {
-  const emailInput =
-    document.getElementById('login-email') ||
-    loginForm.querySelector('input[type="email"], [name="email"]');
-  const passwordInput =
-    document.getElementById('login-password') ||
-    loginForm.querySelector('input[type="password"], [name="password"]');
+    document.getElementById('login-form') || document.querySelector('[data-login-form]');
+  if (loginForm) {
+    const emailInput =
+      document.getElementById('login-email') ||
+      loginForm.querySelector('input[type="email"], [name="email"]');
+    const passwordInput =
+      document.getElementById('login-password') ||
+      loginForm.querySelector('input[type="password"], [name="password"]');
 
-  const emailGroup =
-    document.getElementById('login-email-group') || emailInput?.closest('.auth-field') || null;
-  const passwordGroup =
-    document.getElementById('login-password-group') ||
-    passwordInput?.closest('.auth-field') ||
-    null;
+    const emailGroup =
+      document.getElementById('login-email-group') || emailInput?.closest('.auth-field') || null;
+    const passwordGroup =
+      document.getElementById('login-password-group') ||
+      passwordInput?.closest('.auth-field') ||
+      null;
 
-  const resetFieldState = (input, group) => {
-    if (!input) return;
-    input.classList.remove('is-invalid');
-    if (input.dataset.defaultPlaceholder) {
-      input.placeholder = input.dataset.defaultPlaceholder;
-    }
-    group?.setAttribute('data-field-status', 'valid');
-  };
+    const resetFieldState = (input, group) => {
+      if (!input) return;
+      input.classList.remove('is-invalid');
+      if (input.dataset.defaultPlaceholder) {
+        input.placeholder = input.dataset.defaultPlaceholder;
+      }
+      group?.setAttribute('data-field-status', 'valid');
+    };
 
-  const setFieldInvalid = (input, group, errorMessage) => {
-    if (!input) return;
-    input.value = '';
-    input.classList.add('is-invalid');
-    input.placeholder =
-      errorMessage || input.dataset.errorPlaceholder || input.placeholder;
-    group?.setAttribute('data-field-status', 'invalid');
-  };
+    const setFieldInvalid = (input, group, errorMessage) => {
+      if (!input) return;
+      input.value = '';
+      input.classList.add('is-invalid');
+      input.placeholder =
+        errorMessage || input.dataset.errorPlaceholder || input.placeholder;
+      group?.setAttribute('data-field-status', 'invalid');
+    };
 
-  // Si el usuario vuelve a escribir en un campo, regresamos su estado a válido
-  emailInput?.addEventListener('input', () => resetFieldState(emailInput, emailGroup));
-  passwordInput?.addEventListener('input', () => resetFieldState(passwordInput, passwordGroup));
+    emailInput?.addEventListener('input', () => resetFieldState(emailInput, emailGroup));
+    passwordInput?.addEventListener('input', () => resetFieldState(passwordInput, passwordGroup));
 
-  loginForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
 
-    const emailVal = emailInput?.value ?? '';
-    const passwordVal = passwordInput?.value ?? '';
-    const result = authenticateUser(emailVal, passwordVal);
+      const emailVal = emailInput?.value ?? '';
+      const passwordVal = passwordInput?.value ?? '';
+      const result = authenticateUser(emailVal, passwordVal);
 
-    if (result.ok || result.status === 'authorized') {
-      resetFieldState(emailInput, emailGroup);
-      resetFieldState(passwordInput, passwordGroup);
+      if (result.ok || result.status === 'authorized') {
+        resetFieldState(emailInput, emailGroup);
+        resetFieldState(passwordInput, passwordGroup);
 
-      loginForm.setAttribute('data-auth-state', 'authorized');
+        loginForm.setAttribute('data-auth-state', 'authorized');
 
-      const authorizedBanner = document.getElementById('auth-authorized-banner');
-      const welcomeMessageEl = document.getElementById('auth-welcome-message');
-      const loggedUserNameEl = authorizedBanner?.querySelector('[data-logged-user-name]');
-      const userName =
-        result.user?.name ||
-        result.user?.fullName ||
-        result.user?.nombre ||
-        'usuario';
+        const authorizedBanner = document.getElementById('auth-authorized-banner');
+        const welcomeMessageEl = document.getElementById('auth-welcome-message');
+        const loggedUserNameEl = authorizedBanner?.querySelector('[data-logged-user-name]');
+        const userName =
+          result.user?.name ||
+          result.user?.fullName ||
+          result.user?.nombre ||
+          'usuario';
 
-      if (loggedUserNameEl) {
-        loggedUserNameEl.textContent = userName;
-      } else if (welcomeMessageEl) {
-        welcomeMessageEl.textContent = `Bienvenido, ${userName}.`;
+        if (loggedUserNameEl) {
+          loggedUserNameEl.textContent = userName;
+        } else if (welcomeMessageEl) {
+          welcomeMessageEl.textContent = `Bienvenido, ${userName}.`;
+        }
+
+        authorizedBanner?.classList.remove('is-hidden');
+        showToast(result.message || `Bienvenido/a, ${userName}`, { type: 'success' });
+
+        setTimeout(() => {
+          closeModal('modal-login');
+          window.location.href = 'portal-academico.html';
+        }, 3000);
+        return;
       }
 
-      authorizedBanner?.classList.remove('is-hidden');
-      showToast(result.message || `Bienvenido/a, ${userName}`, { type: 'success' });
+      if (result.clearEmail) {
+        setFieldInvalid(emailInput, emailGroup, result.emailError);
+      } else {
+        resetFieldState(emailInput, emailGroup);
+      }
 
-      setTimeout(() => {
-        closeModal('modal-login');
-        window.location.href = 'portal-academico.html';
-      }, 3000);
-      return;
-    }
+      if (result.clearPassword) {
+        setFieldInvalid(passwordInput, passwordGroup, result.passwordError);
+      } else {
+        resetFieldState(passwordInput, passwordGroup);
+      }
 
-    const openLogoutBtn =
-      document.getElementById('btn-open-logout-modal') ||
-      document.querySelector('[data-nav="logout"]');
-    if (openLogoutBtn) {
-      openLogoutBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-          openModal('modal-logout');
+      const errorText =
+        result.message ||
+        [result.emailError, result.passwordError].filter(Boolean).join(' · ') ||
+        'Correo o contraseña incorrectos.';
+
+      setAlertMessage({
+        modalId: 'modal-login-error',
+        messageSelector: '#modal-login-error-message',
+        message: errorText,
+        open: true
+      });
+    });
+  }
+
+  const openLogoutBtn =
+    document.getElementById('btn-open-logout-modal') ||
+    document.querySelector('[data-nav="logout"]');
+  if (openLogoutBtn) {
+    openLogoutBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      openModal('modal-logout');
     });
   }
 
@@ -184,43 +209,6 @@ if (loginForm) {
     onLogout: () => {
       clearActiveSession();
       closeModal('modal-logout');
-      showToast('Sesión cerrada correctamente', { type: 'info' });
-      window.location.href = 'index.html';
-    }
-  });
-
-
-
-    if (result.clearEmail) {
-      setFieldInvalid(emailInput, emailGroup, result.emailError);
-    } else {
-      resetFieldState(emailInput, emailGroup);
-    }
-
-    if (result.clearPassword) {
-      setFieldInvalid(passwordInput, passwordGroup, result.passwordError);
-    } else {
-      resetFieldState(passwordInput, passwordGroup);
-    }
-
-    const errorText =
-      result.message ||
-      [result.emailError, result.passwordError].filter(Boolean).join(' · ') ||
-      'Correo o contraseña incorrectos.';
-
-    setAlertMessage({
-      modalId: 'modal-login-error',
-      messageSelector: '#modal-login-error-message',
-      message: errorText,
-      open: true
-    });
-  });
-}
-
-
-  bindLogoutAction({
-    onLogout: () => {
-      clearActiveSession();
       showToast('Sesión cerrada correctamente', { type: 'info' });
       window.location.href = 'index.html';
     }

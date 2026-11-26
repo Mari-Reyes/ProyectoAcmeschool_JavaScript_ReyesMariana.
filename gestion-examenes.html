@@ -23,7 +23,9 @@
       aria-label="Inicio del portal académico"
     >
       <!-- Agregar ícono de casa manualmente aquí -->
-      <span class="manual-icon" data-slot="home-icon"></span>
+       <span class="manual-icon" data-slot="home-icon">
+        <img src="./assets/images/icons/home.svg" alt="" aria-hidden="true" />
+      </span>
     </a>
 
     <nav class="nav-links" aria-label="Navegación portal académico">
@@ -64,7 +66,9 @@
     <!-- Encabezado superior común -->
     <section class="exams-mgmt-hero" aria-labelledby="exams-mgmt-hero-title">
       <!-- Agregar imagen de fondo manualmente aquí -->
-      <div class="manual-image" data-slot="exams-mgmt-hero-bg"></div>
+      <div class="manual-image" data-slot="exams-mgmt-hero-bg">
+            <img src="./assets/images/hero/hero-exam-user.png" alt="" aria-hidden="true" />
+      </div>
 
       <div class="exams-mgmt-hero__box">
         <h1 class="exams-mgmt-hero__title" id="exams-mgmt-hero-title">Gestión de exámenes.</h1>
@@ -106,7 +110,9 @@
             aria-label="Buscar examen por ID"
           >
             <!-- Agregar ícono de lupa manualmente aquí -->
-            <span class="manual-icon" data-slot="search-icon"></span>
+             <span class="manual-icon" data-slot="search-icon">
+            <img src="./assets/images/icons/search.svg" alt="" aria-hidden="true" />
+          </span>
           </button>
         </div>
       </div>
@@ -117,7 +123,7 @@
         </h2>
 
         <!-- Contenedor de tarjetas de exámenes (orden aleatorio desde el sistema) -->
-        <div class="mgmt-exams-list" id="mgmt-exams-list">
+        <div class="mgmt-exams-list" id="mgmt-exams-list" data-exams-list>
           <article class="mgmt-exam-card" data-exam-id="">
             <div class="mgmt-exam-card__body">
               <span class="mgmt-exam-card__code" data-field="code">Código exámen</span>
@@ -142,7 +148,9 @@
                   <strong class="exam-duration__value" data-field="duration">30 MIN</strong>
                 </div>
                 <!-- Agregar ícono de reloj manualmente aquí -->
-                <span class="manual-icon" data-slot="clock-icon"></span>
+                <span class="manual-icon" data-slot="clock-icon">
+                <img src="./assets/images/icons/time.svg" alt="" aria-hidden="true" />
+              </span>
               </div>
 
               <div class="exam-approval" data-field="approval">

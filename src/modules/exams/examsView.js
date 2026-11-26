@@ -11,25 +11,33 @@ import {
 import { initEditableTimerControls, formatHMS } from '../../componets/exam-timer.js';
 
 export const EXAM_SECTION_IDS = Object.freeze({
-  list: 'section-exams-list',
-  view: 'section-exam-view',
-  edit: 'section-exam-edit',
-  create: 'section-exam-create',
-  delete: 'section-exam-delete'
+  list: 'section-exams-main',
+  view: 'section-view-exam',
+  edit: 'section-edit-exam',
+  create: 'section-create-exam',
+  delete: 'modal-delete-exam'
 });
 
 /**
  * Muestra únicamente la sección indicada de Gestión de exámenes y oculta las demás.
  */
 export function setActiveExamSection(sectionKey) {
+  if (document.body && sectionKey) {
+    document.body.dataset.examSection = sectionKey;
+  }
+
   Object.entries(EXAM_SECTION_IDS).forEach(([key, elementId]) => {
     const el = document.getElementById(elementId);
     if (!el) return;
-    if (key === sectionKey) {
-      el.classList.remove('is-hidden');
-    } else {
-      el.classList.add('is-hidden');
+
+    const isTarget = key === sectionKey;
+    if (el.classList.contains('modal-overlay')) {
+      el.classList.toggle('is-hidden', !isTarget);
+      return;
     }
+
+    el.classList.toggle('is-hidden', !isTarget);
+    el.classList.toggle('is-active', isTarget);
   });
 }
 
@@ -39,9 +47,11 @@ export function setActiveExamSection(sectionKey) {
  */
 export function renderManagementExamsList(exams = [], handlers = {}) {
   const listContainer =
+    document.getElementById('mgmt-exams-list') ||
     document.getElementById('exams-management-list') ||
     document.querySelector('[data-exams-list]');
   const emptyStateEl =
+    document.getElementById('mgmt-exams-empty') ||
     document.getElementById('exams-empty-search') ||
     document.querySelector('[data-empty-search]');
 
@@ -71,30 +81,52 @@ export function renderManagementExamsList(exams = [], handlers = {}) {
  * Renderiza los detalles completos de un examen en la subsección "Ver examen".
  */
 export function renderExamPreviewSection(exam = {}) {
-  const titleEl = document.getElementById('view-exam-title');
-  const codeEl = document.getElementById('view-exam-code');
-  const descEl = document.getElementById('view-exam-description');
+  const titleEl =
+    document.getElementById('view-exam-title') ||
+    document.getElementById('preview-exam-title');
+  const codeEl =
+    document.getElementById('view-exam-code') ||
+    document.getElementById('preview-exam-code');
+  const descEl =
+    document.getElementById('view-exam-description') ||
+    document.getElementById('preview-exam-description');
   const durationEl = document.getElementById('view-exam-duration');
-  const approvalEl = document.getElementById('view-exam-approval');
-  const questionsContainer = document.getElementById('view-exam-questions');
+  const approvalEl =
+    document.getElementById('view-exam-approval') ||
+    document.getElementById('preview-approval');
+  const questionsContainer =
+    document.getElementById('view-exam-questions') ||
+    document.getElementById('preview-questions-list');
+
+  const hrEl = document.getElementById('preview-hr');
+  const minEl = document.getElementById('preview-min');
+  const secEl = document.getElementById('preview-sec');
+  const totalQEl = document.getElementById('preview-total-questions');
 
   if (titleEl) titleEl.textContent = exam.title ?? 'Nombre del examen';
   if (codeEl) codeEl.textContent = exam.code ?? '';
   if (descEl) descEl.textContent = exam.description ?? '';
 
+  const hms = formatHMS(exam.durationSeconds ?? 0);
   if (durationEl) {
-    const hms = formatHMS(exam.durationSeconds ?? 0);
     durationEl.textContent = `${hms.hr}:${hms.min}:${hms.sec}`;
   }
+  if (hrEl) hrEl.textContent = hms.hr;
+  if (minEl) minEl.textContent = hms.min;
+  if (secEl) secEl.textContent = hms.sec;
 
+  const pct = Number(exam.approvalPercentage ?? 70);
   if (approvalEl) {
-    const pct = Number(exam.approvalPercentage ?? 70);
     approvalEl.textContent = `Porcentaje aprobación: ${pct}%`;
+  }
+
+  const questions = Array.isArray(exam.questions) ? exam.questions : [];
+  if (totalQEl) {
+    totalQEl.textContent = String(questions.length);
   }
 
   if (questionsContainer) {
     questionsContainer.innerHTML = '';
-    const questions = Array.isArray(exam.questions) ? exam.questions : [];
 
     questions.forEach((question, index) => {
       const card = document.createElement('article');
